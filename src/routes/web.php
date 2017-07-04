@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Route;
 Route::group(['namespace' => 'Inspirium\TaskManagement\Controllers', 'middleware' => ['web', 'auth']], function() {
 
 	Route::group(['prefix' => 'tasks'], function() {
-		Route::get('/', 'TaskController@showAll');
+		Route::get('/', 'TaskController@showTasks');
 	});
 
 	Route::group(['prefix' => 'task'], function() {
