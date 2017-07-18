@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateTasksUsersPivot extends Migration
+class CreateTasksDocumentsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,9 @@ class CreateTasksUsersPivot extends Migration
      */
     public function up()
     {
-        Schema::create('tasks_users', function (Blueprint $table) {
-	        $table->integer('task_id');
-        	$table->integer('user_id');
-        	$table->integer('order');
+        Schema::create('tasks_documents', function (Blueprint $table) {
+            $table->integer('task_id');
+            $table->integer('document_id');
         });
     }
 
@@ -27,6 +26,6 @@ class CreateTasksUsersPivot extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('tasks_users');
+        Schema::dropIfExists('tasks_documents');
     }
 }

@@ -17,8 +17,11 @@ class CreateTasksTable extends Migration
             $table->increments('id');
             $table->string('type');
             $table->text('description');
-            $table->string('related_object');
-            $table->string('related_object_id');
+            $table->string('priority');
+            $table->string('status');
+            $table->integer('assigner_id');
+            $table->integer('related_id');
+            $table->string('related_type');
             $table->timestamps();
             $table->softDeletes();
         });

@@ -12,8 +12,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property $id
  * @property $type
  * @property $description
- * @property $related_object
- * @property $related_object_id
+ * @property $priority
+ * @property $status
+ * @property $assigner_id
+ * @property $related
  */
 class Task extends Model {
 
@@ -21,7 +23,21 @@ class Task extends Model {
 
 	protected $table = 'tasks';
 
+	protected $guarded = [];
+
+	public function assigner() {
+		return $this->hasOne('Inspirium\UserManagement\Models\User', 'assigner_id');
+	}
+
 	public function users() {
 		return $this->belongsToMany('Inspirium\UserManagement\Models\User', 'tasks_users', 'user_id', 'task_id');
+	}
+
+	public function documents() {
+		return $this->belongsToMany('Inspirium\FileManagement\Models\Document', 'tasks_documents', 'user_id', 'task_id');
+	}
+
+	public function related() {
+		return $this->morphTo();
 	}
 }
