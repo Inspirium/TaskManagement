@@ -11,8 +11,8 @@ Route::group(['namespace' => 'Inspirium\TaskManagement\Controllers', 'middleware
 	});
 
 	Route::group(['prefix' => 'task'], function() {
-		Route::get('edit/{id?}', 'TaskController@editTask');
-
-		Route::get('show/{id}', 'TaskController@showTask');
+		Route::any('/{any}', function() {
+			return view(config('app.template') . '::router-view');
+		})->where('any', '.*');
 	});
 });
