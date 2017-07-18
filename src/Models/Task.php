@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @package Inspirium\TaskManagement\Models
  *
  * @property $id
+ * @property $name
  * @property $type
  * @property $description
  * @property $priority
