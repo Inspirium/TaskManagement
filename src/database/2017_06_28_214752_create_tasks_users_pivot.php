@@ -16,7 +16,7 @@ class CreateTasksUsersPivot extends Migration
         Schema::create('tasks_users', function (Blueprint $table) {
 	        $table->integer('task_id');
         	$table->integer('user_id');
-        	$table->integer('order');
+        	$table->integer('order')->nullable();
         });
     }
 

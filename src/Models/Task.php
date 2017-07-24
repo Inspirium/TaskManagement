@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property $status
  * @property $assigner_id
  * @property $related
+ * @property $deadline
  */
 class Task extends Model {
 
@@ -24,14 +25,16 @@ class Task extends Model {
 
 	protected $table = 'tasks';
 
+	protected $appends = ['type'];
+
 	protected $guarded = [];
 
 	public function assigner() {
-		return $this->hasOne('Inspirium\UserManagement\Models\User', 'assigner_id');
+		return $this->belongsTo('Inspirium\UserManagement\Models\User', 'assigner_id');
 	}
 
 	public function users() {
-		return $this->belongsToMany('Inspirium\UserManagement\Models\User', 'tasks_users', 'user_id', 'task_id');
+		return $this->belongsToMany('Inspirium\UserManagement\Models\User', 'tasks_users', 'task_id', 'user_id');
 	}
 
 	public function documents() {
@@ -40,5 +43,9 @@ class Task extends Model {
 
 	public function related() {
 		return $this->morphTo();
+	}
+
+	public function getTypeAttribute() {
+		return 2;
 	}
 }
