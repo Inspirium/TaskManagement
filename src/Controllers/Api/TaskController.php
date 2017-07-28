@@ -31,7 +31,8 @@ class TaskController extends Controller {
 			$task = new Task();
 		}
 		$task->name = $request->input('name');
-		$task->assigner_id = Auth::id();
+		$assigner = Employee::where('user_id', Auth::id())->first();
+		$task->assigner()->associate($assigner);
 		$task->type = $request->input('type');
 		$task->description = $request->input('description');
 		$task->priority = $request->input('priority');
@@ -39,10 +40,11 @@ class TaskController extends Controller {
 		$task->deadline = $deadline->toDateTimeString();
 		$task->save();
 		if ( $request->has('users') && !empty($request->input('users')) ) {
-			$task->employees()->sync( $request->input( 'users' ) );
+			$users = array_pluck($request->input('users'), 'id');
+			$task->employees()->sync( $users );
 		}
 		else {
-			$task->employees()->attach(Auth::user()->employee()->id);
+			$task->employees()->attach($assigner);
 		}
 		return response()->json([]);
 	}
