@@ -27,6 +27,8 @@ class Task extends Model {
 
 	protected $guarded = [];
 
+	protected $appends = ['related_link'];
+
 	public function assigner() {
 		return $this->belongsTo('Inspirium\HumanResources\Models\Employee', 'assigner_id');
 	}
@@ -48,5 +50,12 @@ class Task extends Model {
 			return $value;
 		}
 		return 2;
+	}
+
+	public function getRelatedLinkAttribute() {
+		if ($this->related_id) {
+			return url('proposition/' . $this->related_id . '/start');
+		}
+		return '';
 	}
 }
