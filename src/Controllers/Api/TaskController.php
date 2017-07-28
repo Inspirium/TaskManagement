@@ -6,13 +6,15 @@ use App\Http\Controllers\Controller;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Inspirium\HumanResources\Models\Employee;
 use Inspirium\TaskManagement\Models\Task;
 
 class TaskController extends Controller {
 
 	public function getAllUserTasks() {
 		$user_id = Auth::id();
-		$tasks = Auth::user()->tasks;
+		$employee = Employee::where('user_id', $user_id)->first();
+		$tasks = $employee->tasks;
 		return response()->json(['tasks' => $tasks]);
 	}
 
@@ -37,10 +39,10 @@ class TaskController extends Controller {
 		$task->deadline = $deadline->toDateTimeString();
 		$task->save();
 		if ( $request->has('users') && !empty($request->input('users')) ) {
-			$task->users()->sync( $request->input( 'users' ) );
+			$task->employees()->sync( $request->input( 'users' ) );
 		}
 		else {
-			$task->users()->attach(Auth::id());
+			$task->employees()->attach(Auth::user()->employee()->id);
 		}
 		return response()->json([]);
 	}

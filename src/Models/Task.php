@@ -25,16 +25,14 @@ class Task extends Model {
 
 	protected $table = 'tasks';
 
-	protected $appends = ['type'];
-
 	protected $guarded = [];
 
 	public function assigner() {
-		return $this->belongsTo('Inspirium\UserManagement\Models\User', 'assigner_id');
+		return $this->belongsTo('Inspirium\HumanResources\Models\Employee', 'assigner_id');
 	}
 
-	public function users() {
-		return $this->belongsToMany('Inspirium\UserManagement\Models\User', 'tasks_users', 'task_id', 'user_id');
+	public function employees() {
+		return $this->belongsToMany('Inspirium\HumanResources\Models\Employee', 'employee_task_pivot', 'task_id', 'employee_id');
 	}
 
 	public function documents() {
@@ -45,7 +43,10 @@ class Task extends Model {
 		return $this->morphTo();
 	}
 
-	public function getTypeAttribute() {
+	public function getTypeAttribute($value) {
+		if ($value){
+			return $value;
+		}
 		return 2;
 	}
 }
