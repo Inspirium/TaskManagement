@@ -62,4 +62,12 @@ class TaskController extends Controller {
 		return response()->json([]);
 	}
 
+	public function updateOrder(Request $request) {
+		$employee = Employee::where('user_id', Auth::id())->first();
+		$order = $request->input('tasks');
+		foreach ($order as $o => $i) {
+			$employee->tasks()->updateExistingPivot($i, ['order' => $o]);
+		}
+	}
+
 }

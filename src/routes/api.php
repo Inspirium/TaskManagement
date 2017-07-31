@@ -6,6 +6,7 @@ Route::group(['namespace' => 'Inspirium\TaskManagement\Controllers\Api', 'middle
 
 	Route::group(['prefix' => 'tasks'], function() {
 		Route::any('/', 'TaskController@getAllUserTasks');
+		Route::post('updateOrder', 'TaskController@updateOrder');
 	});
 
 	Route::group(['prefix' => 'task'], function() {
