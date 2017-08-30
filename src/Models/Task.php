@@ -37,6 +37,10 @@ class Task extends Model {
 		return $this->belongsToMany('Inspirium\HumanResources\Models\Employee', 'employee_task_pivot', 'task_id', 'employee_id')->withPivot('order');
 	}
 
+	public function departments() {
+		return $this->belongsToMany('Inspirium\HumanResources\Models\Department', 'department_task_pivot', 'task_id', 'department_id')->withPivot('order');
+	}
+
 	public function documents() {
 		return $this->belongsToMany('Inspirium\FileManagement\Models\Document', 'tasks_documents', 'user_id', 'task_id');
 	}

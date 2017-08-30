@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Inspirium\HumanResources\Models\Department;
 use Inspirium\HumanResources\Models\Employee;
 use Inspirium\TaskManagement\Models\Task;
 
@@ -68,6 +69,17 @@ class TaskController extends Controller {
 		foreach ($order as $o => $i) {
 			$employee->tasks()->updateExistingPivot($i, ['order' => $o]);
 		}
+	}
+
+	public function getDepartmentTasks($id) {
+		$department = Department::find($id);
+		$new_tasks = $department->tasks->filter(function($value, $key) {
+			return $value->status === 'new';
+		});
+		$old_tasks = $department->tasks->filter(function($value, $key) {
+			return $value->status !== 'new';
+		});
+		return response()->json(['new_tasks' => $new_tasks, 'old_tasks' => $old_tasks]);
 	}
 
 }
