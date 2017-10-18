@@ -2,7 +2,7 @@
 
 namespace Inspirium\TaskManagement\Observers;
 
-use App\Notifications\TaskAssigned;
+use Inspirium\TaskManagement\Notifications\TaskAssigned;
 use Inspirium\TaskManagement\Models\Task;
 
 class TaskObserver {
