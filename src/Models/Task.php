@@ -18,6 +18,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property int|null $related_id
  * @property string|null $related_type
  * @property string|null $deadline
+ * @property string|null $related_link
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
  * @property string|null $deleted_at
@@ -25,7 +26,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property-read \Illuminate\Database\Eloquent\Collection|\Inspirium\HumanResources\Models\Department[] $departments
  * @property-read \Illuminate\Database\Eloquent\Collection|\Inspirium\FileManagement\Models\Document[] $documents
  * @property-read \Illuminate\Database\Eloquent\Collection|\Inspirium\HumanResources\Models\Employee[] $employees
- * @property-read mixed $related_link
  * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $related
  * @method static bool|null forceDelete()
  * @method static \Illuminate\Database\Query\Builder|\Inspirium\TaskManagement\Models\Task onlyTrashed()
@@ -46,6 +46,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Query\Builder|\Inspirium\TaskManagement\Models\Task withTrashed()
  * @method static \Illuminate\Database\Query\Builder|\Inspirium\TaskManagement\Models\Task withoutTrashed()
  * @mixin \Eloquent
+ * @method static \Illuminate\Database\Eloquent\Builder|\Inspirium\TaskManagement\Models\Task whereRelatedLink($value)
  */
 class Task extends Model {
 
@@ -55,9 +56,11 @@ class Task extends Model {
 
 	protected $guarded = [];
 
-	protected $appends = ['related_link'];
-
 	protected $observables = ['assigned'];
+
+	protected $casts = [
+		'type' => 'integer'
+	];
 
 	public function assigner() {
 		return $this->belongsTo('Inspirium\HumanResources\Models\Employee', 'assigner_id');
@@ -86,9 +89,12 @@ class Task extends Model {
 		return 2;
 	}
 
-	public function getRelatedLinkAttribute() {
+	public function getRelatedLinkAttribute($value) {
+		if ($value) {
+			return $value;
+		}
 		if ($this->related_id) {
-			return url('proposition/' . $this->related_id . '/start');
+			return url('proposition/' . $this->related_id . '/edit/start');
 		}
 		return '';
 	}

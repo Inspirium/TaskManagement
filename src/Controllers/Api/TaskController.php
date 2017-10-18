@@ -25,7 +25,7 @@ class TaskController extends Controller {
 	}
 
 	public function getTask($id) {
-		$task = Task::with(['assigner'])->find($id);
+		$task = Task::with(['assigner', 'related'])->find($id);
 		return response()->json(['task' => $task]);
 	}
 
@@ -63,6 +63,19 @@ class TaskController extends Controller {
 		$task = Task::find($id);
 		$task->status = 'old';
 		$task->save();
+		if ($task->type==3) {
+			$task->related->approveRequest();
+		}
+		return response()->json([]);
+	}
+
+	public function rejectTask($id) {
+		$task = Task::find($id);
+		$task->status = 'old';
+		$task->save();
+		if ($task->type==3) {
+			$task->related->rejectRequest();
+		}
 		return response()->json([]);
 	}
 

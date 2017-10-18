@@ -23,6 +23,7 @@ class CreateTasksTable extends Migration
             $table->integer('assigner_id')->nullable();
             $table->integer('related_id')->nullable();
             $table->string('related_type')->nullable();
+            $table->string('related_link')->nullable();
             $table->dateTime('deadline')->nullable();
             $table->timestamps();
             $table->softDeletes();
