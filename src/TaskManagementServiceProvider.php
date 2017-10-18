@@ -3,6 +3,8 @@
 namespace Inspirium\TaskManagement;
 
 use Illuminate\Support\ServiceProvider;
+use Inspirium\TaskManagement\Observers\TaskObserver;
+use Inspirium\TaskManagement\Models\Task;
 
 class TaskManagementServiceProvider extends ServiceProvider
 {
@@ -17,6 +19,8 @@ class TaskManagementServiceProvider extends ServiceProvider
         $this->loadRoutesFrom(__DIR__ . '/routes/api.php');
 
         $this->loadMigrationsFrom(__DIR__ . '/database');
+
+        Task::observe(TaskObserver::class);
     }
 
     /**

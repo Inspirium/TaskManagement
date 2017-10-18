@@ -30,6 +30,7 @@ class TaskController extends Controller {
 	}
 
 	public function postTask(Request $request, $id = null) {
+		/** @var Task $task */
 		if ($id) {
 			$task = Task::find($id);
 		}
@@ -49,9 +50,11 @@ class TaskController extends Controller {
 		if ( $request->has('users') && !empty($request->input('users')) ) {
 			$users = array_pluck($request->input('users'), 'id');
 			$task->employees()->sync( $users );
+			$task->triggerAssigned();
 		}
 		else {
 			$task->employees()->attach($assigner);
+			$task->triggerAssigned();
 		}
 		return response()->json([]);
 	}

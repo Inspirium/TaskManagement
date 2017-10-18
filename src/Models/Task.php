@@ -57,6 +57,8 @@ class Task extends Model {
 
 	protected $appends = ['related_link'];
 
+	protected $observables = ['assigned'];
+
 	public function assigner() {
 		return $this->belongsTo('Inspirium\HumanResources\Models\Employee', 'assigner_id');
 	}
@@ -89,5 +91,10 @@ class Task extends Model {
 			return url('proposition/' . $this->related_id . '/start');
 		}
 		return '';
+	}
+
+	//TODO: create Trait
+	public function triggerAssigned() {
+		$this->fireModelEvent('assigned');
 	}
 }
