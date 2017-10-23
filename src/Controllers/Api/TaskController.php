@@ -63,7 +63,25 @@ class TaskController extends Controller {
 		return response()->json([]);
 	}
 
-	public function acceptTask($id){
+	public function reassingTask( Request $request, $id) {
+		$old_task = Task::find($id);
+		$task = new Task();
+		$task->name = $old_task->name;
+		$assigner = Employee::where('user_id', Auth::id())->first();
+		$task->assigner()->associate($assigner);
+		$task->type = $old_task->type;
+		$task->description = $old_task->description;
+		$task->priority = $old_task->priority;
+		$task->deadline = $old_task->deadline;
+		$task->status = 'new';
+		$task->parent()->associate($old_task);
+		$task->save();
+		$users = array_pluck($request->input('employees'), 'id');
+		$task->employees()->sync( $users );
+		$task->triggerAssigned();
+	}
+
+	public function acceptTask(Request $request, $id){
 		$task = Task::find($id);
 		$task->status = 'accepted';
 		$task->save();
@@ -75,14 +93,13 @@ class TaskController extends Controller {
 		return response()->json([]);
 	}
 
-	public function rejectTask($id) {
+	public function rejectTask(Request $request, $id) {
 		$task = Task::find($id);
-		$task->status = 'old';
+		$task->status = 'rejected';
+		$task->status_info = $request->input('reason');
 		$task->save();
 		if ($task->type==3) {
 			$task->related->rejectRequest();
-			$task->status = 'rejected';
-			$task->save();
 		}
 		return response()->json([]);
 	}

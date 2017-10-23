@@ -82,6 +82,10 @@ class Task extends Model {
 		return $this->morphTo();
 	}
 
+	public function parent() {
+		return $this->belongsTo(Task::class, 'parent_id');
+	}
+
 	public function getTypeAttribute($value) {
 		if ($value){
 			return $value;
