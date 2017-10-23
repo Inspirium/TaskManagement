@@ -65,10 +65,12 @@ class TaskController extends Controller {
 
 	public function acceptTask($id){
 		$task = Task::find($id);
-		$task->status = 'old';
+		$task->status = 'accepted';
 		$task->save();
 		if ($task->type==3) {
 			$task->related->approveRequest();
+			$task->status = 'completed';
+			$task->save();
 		}
 		return response()->json([]);
 	}
@@ -79,6 +81,8 @@ class TaskController extends Controller {
 		$task->save();
 		if ($task->type==3) {
 			$task->related->rejectRequest();
+			$task->status = 'rejected';
+			$task->save();
 		}
 		return response()->json([]);
 	}
