@@ -15,13 +15,17 @@ class TaskController extends Controller {
 	public function getAllUserTasks() {
 		$user_id = Auth::id();
 		$employee = Employee::where('user_id', $user_id)->first();
-		$new_tasks = $employee->tasks->filter(function($value, $key) {
-			return $value->status === 'new';
+		$tasks = $employee->tasks->filter(function($value, $key) {
+			return $value->status == 'new';
 		});
-		$old_tasks = $employee->tasks->filter(function($value, $key) {
-			return $value->status !== 'new';
+		$sent_tasks = Task::where('assigner_id', $employee->id)->with('assigner')->get();
+		$rejected_tasks = $employee->tasks->filter(function($value, $key) {
+			return $value->status === 'rejected';
 		});
-		return response()->json(['new_tasks' => $new_tasks, 'old_tasks' => $old_tasks]);
+		$completed_tasks = $employee->tasks->filter(function($value, $key) {
+			return $value->status === 'completed';
+		});
+		return response()->json(['tasks' => $tasks, 'sent_tasks' => $sent_tasks, 'rejected_tasks' => $rejected_tasks, 'completed_tasks' => $completed_tasks]);
 	}
 
 	public function getTask($id) {
