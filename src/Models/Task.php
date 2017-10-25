@@ -107,4 +107,8 @@ class Task extends Model {
 	public function triggerAssigned() {
 		$this->fireModelEvent('assigned');
 	}
+
+	public function triggerCompleted() {
+		$this->fireModelEvent('completed');
+	}
 }
