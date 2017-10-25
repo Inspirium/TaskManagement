@@ -17,5 +17,6 @@ Route::group(['namespace' => 'Inspirium\TaskManagement\Controllers\Api', 'middle
 		Route::post('{id}/accept', 'TaskController@acceptTask');
 		Route::post('{id}/reject', 'TaskController@rejectTask');
 		Route::post('{id}/reassign', 'TaskController@reassignTask');
+		Route::post('{id}/complete', 'TaskController@completeTask');
 	});
 });
