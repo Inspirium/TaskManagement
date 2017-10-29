@@ -61,21 +61,36 @@ class TaskAssigned extends Notification
 			    return [
 				    'message' => 'Please add more data',
 				    'tasktype' => 'assignment',
-				    'link' => '/task/show/'.$this->task->id
+				    'link' => '/task/show/'.$this->task->id,
+				    'sender' => [
+				    	'name' => $this->task->assigner->name,
+					    'image' => $this->task->assigner->image,
+					    'link' => $this->task->assigner->link
+	                ]
 			    ];
 		    	break;
 		    case 2:
 			    return [
 				    'message' => 'Please add more data',
 				    'tasktype' => 'assignment',
-				    'link' => '/task/show/'.$this->task->id
+				    'link' => '/task/show/'.$this->task->id,
+				    'sender' => [
+					    'name' => $this->task->assigner->name,
+					    'image' => $this->task->assigner->image,
+					    'link' => $this->task->assigner->link
+				    ]
 			    ];
 		    	break;
 		    case 3:
 			    return [
 				    'message' => 'Expense Approval Request',
 				    'tasktype' => 'approval_request',
-				    'link' => '/task/show/'.$this->task->id
+				    'link' => '/task/show/'.$this->task->id,
+				    'sender' => [
+					    'name' => $this->task->assigner->name,
+					    'image' => $this->task->assigner->image,
+					    'link' => $this->task->assigner->link
+				    ]
 			    ];
 		    	break;
 	    }

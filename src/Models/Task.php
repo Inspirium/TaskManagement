@@ -47,6 +47,12 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Query\Builder|\Inspirium\TaskManagement\Models\Task withoutTrashed()
  * @mixin \Eloquent
  * @method static \Illuminate\Database\Eloquent\Builder|\Inspirium\TaskManagement\Models\Task whereRelatedLink($value)
+ * @property string|null $status_info
+ * @property int|null $parent_id
+ * @property-read \Inspirium\TaskManagement\Models\Task|null $parent
+ * @property-read \Inspirium\Messaging\Models\Thread $thread
+ * @method static \Illuminate\Database\Eloquent\Builder|\Inspirium\TaskManagement\Models\Task whereParentId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Inspirium\TaskManagement\Models\Task whereStatusInfo($value)
  */
 class Task extends Model {
 
@@ -84,6 +90,10 @@ class Task extends Model {
 
 	public function parent() {
 		return $this->belongsTo(Task::class, 'parent_id');
+	}
+
+	public function thread() {
+		return $this->morphOne('Inspirium\Messaging\Models\Thread', 'connection');
 	}
 
 	public function getTypeAttribute($value) {
