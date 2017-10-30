@@ -57,8 +57,14 @@ class TaskCompleted extends Notification
     public function toArray($notifiable)
     {
 	    return [
-		    'message' => 'Task has been marked as completed',
-		    'link' => '/task/show/'.$this->task->id
+	    	'title' => 'Task has been marked as completed',
+		    'message' => $this->task->name,
+		    'link' => '/task/show/'.$this->task->id,
+		    'sender' => [
+			    'name' => $this->task->employees[0],
+			    'image' => $this->task->employees[0]->image,
+			    'link' => $this->task->employees[0]->link
+		    ]
 	    ];
 
     }

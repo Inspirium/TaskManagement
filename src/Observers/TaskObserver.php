@@ -5,6 +5,7 @@ namespace Inspirium\TaskManagement\Observers;
 use Inspirium\Messaging\Models\Thread;
 use Inspirium\TaskManagement\Notifications\TaskAssigned;
 use Inspirium\TaskManagement\Models\Task;
+use Inspirium\TaskManagement\Notifications\TaskCompleted;
 
 class TaskObserver {
 

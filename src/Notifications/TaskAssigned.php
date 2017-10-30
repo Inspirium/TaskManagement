@@ -59,7 +59,8 @@ class TaskAssigned extends Notification
     	switch($this->task->type) {
 		    case 1:
 			    return [
-				    'message' => 'Please add more data',
+				    'title' => 'User assigned you new task',
+				    'message' => $this->task->assigner->name . ' je zadao/la novi zadatak - ' . $this->task->name,
 				    'tasktype' => 'assignment',
 				    'link' => '/task/show/'.$this->task->id,
 				    'sender' => [
@@ -71,8 +72,8 @@ class TaskAssigned extends Notification
 		    	break;
 		    case 2:
 			    return [
+			    	'title' => '',
 				    'message' => 'Please add more data',
-				    'tasktype' => 'assignment',
 				    'link' => '/task/show/'.$this->task->id,
 				    'sender' => [
 					    'name' => $this->task->assigner->name,
@@ -83,8 +84,8 @@ class TaskAssigned extends Notification
 		    	break;
 		    case 3:
 			    return [
-				    'message' => 'Expense Approval Request',
-				    'tasktype' => 'approval_request',
+				    'title' => 'User requested cost approval',
+				    'message' => $this->task->assigner->name . ' je zatražio/la odobrenje troška - ' . $this->task->related->name,
 				    'link' => '/task/show/'.$this->task->id,
 				    'sender' => [
 					    'name' => $this->task->assigner->name,
