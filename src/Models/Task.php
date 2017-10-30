@@ -95,7 +95,7 @@ class Task extends Model {
 	}
 
 	public function thread() {
-		return $this->morphMany('Inspirium\Messaging\Models\Thread', 'connection');
+		return $this->morphOne('Inspirium\Messaging\Models\Thread', 'connection');
 	}
 
 	public function getTypeAttribute($value) {
