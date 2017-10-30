@@ -68,7 +68,7 @@ class Task extends Model {
 		'type' => 'integer'
 	];
 
-	protected $with = ['thread'];
+	//protected $with = ['thread'];
 
 	public function assigner() {
 		return $this->belongsTo('Inspirium\HumanResources\Models\Employee', 'assigner_id');
@@ -95,7 +95,7 @@ class Task extends Model {
 	}
 
 	public function thread() {
-		return $this->morphOne('Inspirium\Messaging\Models\Thread', 'connection');
+		return $this->morphMany('Inspirium\Messaging\Models\Thread', 'connection');
 	}
 
 	public function getTypeAttribute($value) {

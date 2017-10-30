@@ -18,6 +18,7 @@ class TaskController extends Controller {
 		$new_tasks = $employee->tasks->filter(function($value, $key) {
 			return $value->status === 'new';
 		});
+
 		$accepted_tasks = $employee->tasks->filter(function($value, $key) {
 			return $value->status === 'accepted';
 		});
@@ -32,7 +33,7 @@ class TaskController extends Controller {
 	}
 
 	public function getTask($id) {
-		$task = Task::with(['assigner', 'related'])->find($id);
+		$task = Task::with(['assigner', 'related', 'thread'])->find($id);
 		return response()->json(['task' => $task]);
 	}
 

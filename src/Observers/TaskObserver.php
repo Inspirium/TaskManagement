@@ -10,9 +10,13 @@ class TaskObserver {
 
 	public function assigned(Task $task) {
 		if (!$task->thread) {
-			$task->thread()->create(['title' => $task->title]);
+			$t = Thread::create(['title' => $task->title]);
+			$t->users()->sync($task->employees->pluck('id')->all());
+			$task->thread()->save($t);
 		}
-		$task->thread->users()->sync($task->employees->pluck('id')->all());
+		else {
+			$task->thread->users()->sync($task->employees->pluck('id')->all());
+		}
 
 		foreach ($task->employees as $employee) {
 			$user = $employee->user;
