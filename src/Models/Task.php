@@ -68,6 +68,8 @@ class Task extends Model {
 		'type' => 'integer'
 	];
 
+	protected $with = ['thread'];
+
 	public function assigner() {
 		return $this->belongsTo('Inspirium\HumanResources\Models\Employee', 'assigner_id');
 	}
