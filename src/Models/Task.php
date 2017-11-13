@@ -2,8 +2,10 @@
 
 namespace Inspirium\TaskManagement\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Inspirium\Messaging\Models\Thread;
 
 /**
  * Inspirium\TaskManagement\Models\Task
@@ -68,14 +70,23 @@ class Task extends Model {
 		'type' => 'integer'
 	];
 
-	//protected $with = ['thread'];
+	protected $dates = [
+		'created_at',
+		'updated_at',
+		'deleted_at',
+		'running_from'
+	];
+
+	protected $with = ['thread', 'documents'];
+
+	protected $appends = ['files'];
 
 	public function assigner() {
 		return $this->belongsTo('Inspirium\HumanResources\Models\Employee', 'assigner_id');
 	}
 
-	public function employees() {
-		return $this->belongsToMany('Inspirium\HumanResources\Models\Employee', 'employee_task_pivot', 'task_id', 'employee_id')->withPivot('order');
+	public function assignee() {
+		return $this->belongsTo('Inspirium\HumanResources\Models\Employee', 'assignee_id');
 	}
 
 	public function departments() {
@@ -83,15 +94,11 @@ class Task extends Model {
 	}
 
 	public function documents() {
-		return $this->belongsToMany('Inspirium\FileManagement\Models\Document', 'tasks_documents', 'user_id', 'task_id');
+		return $this->belongsToMany('Inspirium\FileManagement\Models\File', 'tasks_documents', 'document_id', 'task_id')->withPivot('is_final');
 	}
 
 	public function related() {
 		return $this->morphTo();
-	}
-
-	public function parent() {
-		return $this->belongsTo(Task::class, 'parent_id');
 	}
 
 	public function thread() {
@@ -113,6 +120,37 @@ class Task extends Model {
 			return url('proposition/' . $this->related_id . '/edit/start');
 		}
 		return '';
+	}
+
+	public function getRunningElapsedAttribute($value) {
+		if ($this->is_running) {
+			return $value + Carbon::now()->diffInSeconds($this->running_from);
+		}
+		return $value;
+	}
+
+	public function getFilesAttribute() {
+		$value = $this->documents;
+		return [
+			'initial' => $value->filter(function($element){
+				return !$element->is_final;
+			}),
+			'final' => $value->filter(function($element){
+				return $element->is_final;
+			}),
+			'path' => 'tasks'
+		];
+	}
+
+	public function assignThread($employees) {
+		if (!$this->thread) {
+			$t = Thread::create(['title' => $this->name]);
+			$t->users()->sync(collect($employees)->pluck('id')->all());
+			$this->thread()->save($t);
+		}
+		else {
+			$this->thread->users()->sync(collect($employees)->pluck('id')->all());
+		}
 	}
 
 	//TODO: create Trait

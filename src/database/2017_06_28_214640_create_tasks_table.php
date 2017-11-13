@@ -22,12 +22,15 @@ class CreateTasksTable extends Migration
             $table->string('status')->nullable();
             $table->text('status_info')->nullable();
             $table->integer('assigner_id')->nullable();
+            $table->integer('assignee_id')->nullable();
             $table->integer('related_id')->nullable();
             $table->string('related_type')->nullable();
             $table->string('related_link')->nullable();
             $table->dateTime('deadline')->nullable();
-            $table->integer('parent_id')->nullable();
             $table->integer('thread_id')->nullable();
+            $table->boolean('is_running')->default(false);
+            $table->timestamp('running_from')->nullable();
+            $table->integer('running_elapsed')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

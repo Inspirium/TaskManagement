@@ -16,6 +16,7 @@ class CreateTasksDocumentsPivot extends Migration
         Schema::create('tasks_documents', function (Blueprint $table) {
             $table->integer('task_id');
             $table->integer('document_id');
+            $table->boolean('is_final')->default(false);
         });
     }
 
