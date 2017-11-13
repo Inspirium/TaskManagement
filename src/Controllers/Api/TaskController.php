@@ -148,8 +148,13 @@ class TaskController extends Controller {
 		if ($request->input('isFinal')) {
 			$final = true;
 		}
-		$task->documents()->attach($request->input('file.id'), ['is_final' => $final]);
-		return response()->json($request->all());
+		if ($task->type == 4) {
+			$task->related->documents()->attach($request->input( 'file.id' ), [ 'is_final' => $final, 'type' => $task->related_link ]);
+		}
+		else {
+			$task->documents()->attach( $request->input( 'file.id' ), [ 'is_final' => $final ] );
+		}
+		return response()->json([]);
 	}
 
 }
