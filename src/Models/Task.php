@@ -130,16 +130,27 @@ class Task extends Model {
 	}
 
 	public function getFilesAttribute() {
-		$value = $this->documents;
-		return [
-			'initial' => $value->filter(function($element){
-				return !$element->is_final;
-			}),
-			'final' => $value->filter(function($element){
-				return $element->is_final;
-			}),
-			'path' => 'tasks'
-		];
+		if ($this->type == 4) {
+			$type = $this->related_link;
+			return [
+				'initial' => $this->related->documents()->wherePivot( 'type', $type )->wherePivot( 'final', false )->get(),
+				'final' => $this->related->documents()->wherePivot( 'type', $type )->wherePivot( 'final', true )->get(),
+				'path'    => $type
+			];
+		}
+		else {
+			$value = $this->documents;
+
+			return [
+				'initial' => $value->filter( function ( $element ) {
+					return ! $element->is_final;
+				} ),
+				'final'   => $value->filter( function ( $element ) {
+					return $element->is_final;
+				} ),
+				'path'    => 'tasks'
+			];
+		}
 	}
 
 	public function assignThread($employees) {
