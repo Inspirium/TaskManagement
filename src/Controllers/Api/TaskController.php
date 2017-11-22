@@ -87,6 +87,14 @@ class TaskController extends Controller {
 			$task->status = 'completed';
 			$task->save();
 		}
+		if ($task->type == 5) {
+			$proposition = $task->related;
+			$proposition->status = 'approved';
+			$proposition->approved = true;
+			$proposition->approved_by = Auth::id();
+			$proposition->approved_on = Carbon::now();
+			$proposition->save();
+		}
 		return response()->json([]);
 	}
 
@@ -97,6 +105,12 @@ class TaskController extends Controller {
 		$task->save();
 		if ($task->type==3) {
 			$task->related->rejectRequest();
+		}
+		if ($task->type == 5) {
+			$proposition = $task->related;
+			$proposition->status = 'rejected';
+			$proposition->approved = false;
+			$proposition->save();
 		}
 		return response()->json([]);
 	}
