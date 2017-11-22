@@ -3,6 +3,7 @@
 namespace Inspirium\TaskManagement\Notifications;
 
 use Illuminate\Bus\Queueable;
+use Illuminate\Notifications\Messages\BroadcastMessage;
 use Illuminate\Notifications\Notification;
 use Illuminate\Notifications\Messages\MailMessage;
 use Inspirium\TaskManagement\Models\Task;
@@ -31,7 +32,7 @@ class TaskCompleted extends Notification
      */
     public function via($notifiable)
     {
-        return ['database'];
+        return ['database', 'broadcast'];
     }
 
     /**
@@ -68,4 +69,20 @@ class TaskCompleted extends Notification
 	    ];
 
     }
+
+	public function toBroadcast($notifiable)
+	{
+		return new BroadcastMessage([ 'data' => [
+			'title' => 'Task has been marked as completed',
+			'message' => $this->task->name,
+			'link' => '/task/show/'.$this->task->id,
+			'sender' => [
+				'name' => $this->task->employees[0],
+				'image' => $this->task->employees[0]->image,
+				'link' => $this->task->employees[0]->link
+			]
+			]
+		]);
+
+	}
 }

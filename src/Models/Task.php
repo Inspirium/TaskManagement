@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Inspirium\Messaging\Models\Thread;
+use Inspirium\TaskManagement\Notifications\TaskAssigned;
 
 /**
  * Inspirium\TaskManagement\Models\Task
@@ -77,7 +78,7 @@ class Task extends Model {
 		'running_from'
 	];
 
-	protected $with = ['thread', 'documents'];
+	protected $with = [ 'documents'];
 
 	protected $appends = ['files'];
 
@@ -158,15 +159,22 @@ class Task extends Model {
 			$t = Thread::create(['title' => $this->name]);
 			$t->users()->sync(collect($employees)->pluck('id')->all());
 			$this->thread()->save($t);
+			$t->load('users');
+			foreach($t->users as $employee) {
+				$employee->user->notify(new TaskAssigned($this));
+			}
 		}
 		else {
 			$this->thread->users()->sync(collect($employees)->pluck('id')->all());
+			foreach($this->thread->users as $employee) {
+				$employee->user->notify(new TaskAssigned($this));
+			}
 		}
 	}
 
 	//TODO: create Trait
 	public function triggerAssigned() {
-		$this->fireModelEvent('assigned');
+		//$this->fireModelEvent('assigned');
 	}
 
 	public function triggerCompleted() {

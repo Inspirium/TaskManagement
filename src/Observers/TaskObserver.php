@@ -10,16 +10,7 @@ use Inspirium\TaskManagement\Notifications\TaskCompleted;
 class TaskObserver {
 
 	public function assigned(Task $task) {
-		if (!$task->thread) {
-			$t = Thread::create(['title' => $task->title]);
-			$t->users()->sync($task->employees->pluck('id')->all());
-			$task->thread()->save($t);
-		}
-		else {
-			$task->thread->users()->sync($task->employees->pluck('id')->all());
-		}
-
-		foreach ($task->employees as $employee) {
+		foreach ($task->thread->users as $employee) {
 			$user = $employee->user;
 			$user->notify(new TaskAssigned($task));
 		}

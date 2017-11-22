@@ -6,6 +6,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Notifications\Messages\MailMessage;
 use Inspirium\TaskManagement\Models\Task;
+use Illuminate\Notifications\Messages\BroadcastMessage;
 
 class TaskAssigned extends Notification
 {
@@ -31,7 +32,7 @@ class TaskAssigned extends Notification
      */
     public function via($notifiable)
     {
-        return ['database'];
+        return ['database', 'broadcast'];
     }
 
     /**
@@ -72,9 +73,10 @@ class TaskAssigned extends Notification
 		    	break;
 		    case 2:
 			    return [
-			    	'title' => '',
-				    'message' => 'Please add more data',
+			    	'title' => 'User assigned you new task',
+				    'message' => $this->task->assigner->name . ' je zadao/la novi zadatak - ' . $this->task->name,
 				    'link' => '/task/show/'.$this->task->id,
+				    'tasktype' => 'assignment',
 				    'sender' => [
 					    'name' => $this->task->assigner->name,
 					    'image' => $this->task->assigner->image,
@@ -93,6 +95,53 @@ class TaskAssigned extends Notification
 					    'link' => $this->task->assigner->link
 				    ]
 			    ];
+		    	break;
+	    }
+
+    }
+
+    public function toBroadcast($notifiable) {
+	    switch($this->task->type) {
+		    case 1:
+			    return new BroadcastMessage([ 'data' => [
+				    'title' => 'User assigned you new task',
+				    'message' => $this->task->assigner->name . ' je zadao/la novi zadatak - ' . $this->task->name,
+				    'tasktype' => 'assignment',
+				    'link' => '/task/show/'.$this->task->id,
+				    'sender' => [
+					    'name' => $this->task->assigner->name,
+					    'image' => $this->task->assigner->image,
+					    'link' => $this->task->assigner->link
+				    ]
+			    ]
+			    ]);
+		    	break;
+		    case 2:
+			    return new BroadcastMessage([ 'data' => [
+				    'title' => 'User assigned you new task',
+				    'message' => $this->task->assigner->name . ' je zadao/la novi zadatak - ' . $this->task->name,
+				    'tasktype' => 'assignment',
+				    'link' => '/task/show/'.$this->task->id,
+				    'sender' => [
+					    'name' => $this->task->assigner->name,
+					    'image' => $this->task->assigner->image,
+					    'link' => $this->task->assigner->link
+				    ]
+			    ]
+			    ]);
+		    	break;
+		    case 3:
+			    return new BroadcastMessage([ 'data' => [
+				    'title' => 'User requested cost approval',
+				    'message' => $this->task->assigner->name . ' je zatražio/la odobrenje troška - ' . $this->task->related->name,
+				    'link' => '/task/show/'.$this->task->id,
+				    'sender' => [
+					    'name' => $this->task->assigner->name,
+					    'image' => $this->task->assigner->image,
+					    'link' => $this->task->assigner->link
+				    ]
+			    ]
+			    ]);
 		    	break;
 	    }
 
