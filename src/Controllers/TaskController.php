@@ -2,7 +2,7 @@
 
 namespace Inspirium\TaskManagement\Controllers;
 
-use App\Http\Controllers\Controller;
+use Inspirium\Http\Controllers\Controller;
 use Inspirium\TaskManagement\Models\Task;
 
 class TaskController extends Controller {
