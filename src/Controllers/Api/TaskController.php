@@ -13,8 +13,7 @@ use Inspirium\TaskManagement\Models\Task;
 class TaskController extends Controller {
 
 	public function getAllUserTasks() {
-		$user_id = Auth::id();
-		$employee = Employee::where('user_id', $user_id)->first();
+		$employee = Auth::user();
 		$new_tasks = Task::whereHas('thread',function($query) use ($employee) {
 			$query->whereHas('users', function($query) use ($employee) {
 				$query->where('employee_id', $employee->id);
@@ -54,7 +53,7 @@ class TaskController extends Controller {
 			$task = new Task();
 		}
 		$task->name = $request->input('name');
-		$assigner = Employee::where('user_id', Auth::id())->first();
+		$assigner = Auth::user();
 		$task->assigner()->associate($assigner);
 		$task->type = $request->input('type');
 		$task->description = $request->input('description');
@@ -116,7 +115,7 @@ class TaskController extends Controller {
 	}
 
 	public function updateOrder(Request $request) {
-		$employee = Employee::where('user_id', Auth::id())->first();
+		$employee = Auth::user();
 		$order = $request->input('tasks');
 		foreach ($order as $o => $i) {
 			$employee->tasks()->updateExistingPivot($i, ['order' => $o]);
