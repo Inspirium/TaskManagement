@@ -161,13 +161,13 @@ class Task extends Model {
 			$this->thread()->save($t);
 			$t->load('users');
 			foreach($t->users as $employee) {
-				$employee->user->notify(new TaskAssigned($this));
+				$employee->notify(new TaskAssigned($this));
 			}
 		}
 		else {
 			$this->thread->users()->sync(collect($employees)->pluck('id')->all());
 			foreach($this->thread->users as $employee) {
-				$employee->user->notify(new TaskAssigned($this));
+				$employee->notify(new TaskAssigned($this));
 			}
 		}
 	}
