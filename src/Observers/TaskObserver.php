@@ -11,8 +11,7 @@ class TaskObserver {
 
 	public function assigned(Task $task) {
 		foreach ($task->thread->users as $employee) {
-			$user = $employee->user;
-			$user->notify(new TaskAssigned($task));
+			$employee->notify(new TaskAssigned($task));
 		}
 	}
 

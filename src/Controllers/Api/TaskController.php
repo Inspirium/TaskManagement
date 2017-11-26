@@ -6,8 +6,8 @@ use Inspirium\Http\Controllers\Controller;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Inspirium\HumanResources\Models\Department;
-use Inspirium\HumanResources\Models\Employee;
+use Inspirium\Models\HumanResources\Department;
+use Inspirium\Models\HumanResources\Employee;
 use Inspirium\TaskManagement\Models\Task;
 
 class TaskController extends Controller {

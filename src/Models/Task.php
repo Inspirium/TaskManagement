@@ -83,11 +83,11 @@ class Task extends Model {
 	protected $appends = ['files'];
 
 	public function assigner() {
-		return $this->belongsTo('Inspirium\HumanResources\Models\Employee', 'assigner_id');
+		return $this->belongsTo('Inspirium\Models\HumanResources\Employee', 'assigner_id');
 	}
 
 	public function assignee() {
-		return $this->belongsTo('Inspirium\HumanResources\Models\Employee', 'assignee_id');
+		return $this->belongsTo('Inspirium\Models\HumanResources\Employee', 'assignee_id');
 	}
 
 	public function departments() {
