@@ -5,7 +5,7 @@ namespace Inspirium\TaskManagement\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Inspirium\Messaging\Models\Thread;
+use Inspirium\Models\Messaging\Thread;
 use Inspirium\TaskManagement\Notifications\TaskAssigned;
 
 /**
@@ -91,11 +91,11 @@ class Task extends Model {
 	}
 
 	public function departments() {
-		return $this->belongsToMany('Inspirium\HumanResources\Models\Department', 'department_task_pivot', 'task_id', 'department_id')->withPivot('order');
+		return $this->belongsToMany('Inspirium\Models\HumanResources\Department', 'department_task_pivot', 'task_id', 'department_id')->withPivot('order');
 	}
 
 	public function documents() {
-		return $this->belongsToMany('Inspirium\FileManagement\Models\File', 'tasks_documents', 'document_id', 'task_id')->withPivot('is_final');
+		return $this->belongsToMany('Inspirium\Models\FileManagement\File', 'tasks_documents', 'document_id', 'task_id')->withPivot('is_final');
 	}
 
 	public function related() {
@@ -103,7 +103,7 @@ class Task extends Model {
 	}
 
 	public function thread() {
-		return $this->morphOne('Inspirium\Messaging\Models\Thread', 'connection');
+		return $this->morphOne('Inspirium\Models\Messaging\Thread', 'connection');
 	}
 
 	public function getTypeAttribute($value) {
