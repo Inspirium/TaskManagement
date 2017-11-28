@@ -93,6 +93,8 @@ class TaskController extends Controller {
 			$proposition->approved_by = Auth::id();
 			$proposition->approved_on = Carbon::now();
 			$proposition->save();
+			$task->status = 'completed';
+			$task->save();
 		}
 		return response()->json([]);
 	}
@@ -110,6 +112,8 @@ class TaskController extends Controller {
 			$proposition->status = 'rejected';
 			$proposition->approved = false;
 			$proposition->save();
+			$task->status = 'completed';
+			$task->save();
 		}
 		return response()->json([]);
 	}
