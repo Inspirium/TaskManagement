@@ -18,24 +18,24 @@ class TaskController extends Controller {
 			$query->whereHas('users', function($query) use ($employee) {
 				$query->where('employee_id', $employee->id);
 			});
-		})->where('status', 'new')->with('assigner')->get();
+		})->where('status', 'new')->where('assigner_id', '!=', $employee->id)->with('assigner')->get();
 
 		$accepted_tasks = Task::whereHas('thread',function($query) use ($employee) {
 			$query->whereHas('users', function($query) use ($employee) {
 				$query->where('employee_id', $employee->id);
 			});
-		})->where('status', 'accepted')->with('assigner')->get();
+		})->where('status', 'accepted')->where('assigner_id', '!=', $employee->id)->with('assigner')->get();
 		$sent_tasks = Task::where('assigner_id', $employee->id)->with('assigner')->get();
 		$rejected_tasks = Task::whereHas('thread',function($query) use ($employee) {
 			$query->whereHas('users', function($query) use ($employee) {
 				$query->where('employee_id', $employee->id);
 			});
-		})->where('status', 'rejected')->with('assigner')->get();
+		})->where('status', 'rejected')->where('assigner_id', '!=', $employee->id)->with('assigner')->get();
 		$completed_tasks = Task::whereHas('thread',function($query) use ($employee) {
 			$query->whereHas('users', function($query) use ($employee) {
 				$query->where('employee_id', $employee->id);
 			});
-		})->where('status', 'completed')->with('assigner')->get();
+		})->where('status', 'completed')->where('assigner_id', '!=', $employee->id)->with('assigner')->get();
 		return response()->json(['new_tasks' => $new_tasks, 'accepted_tasks' => $accepted_tasks, 'sent_tasks' => $sent_tasks, 'rejected_tasks' => $rejected_tasks, 'completed_tasks' => $completed_tasks]);
 	}
 
