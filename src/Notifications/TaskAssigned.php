@@ -57,24 +57,24 @@ class TaskAssigned extends Notification
      */
     public function toArray($notifiable)
     {
-    	switch($this->task->type) {
+	    switch($this->task->type) {
 		    case 1:
 			    return [
-				    'title' => 'User assigned you new task',
-				    'message' => $this->task->assigner->name . ' je zadao/la novi zadatak - ' . $this->task->name,
+				    'title' => __('New task assigned'),
+				    'message' => __(':assigner has assigned you a new task :task', ['assigner' => $this->task->assigner->name, 'task' => $this->task->name]),
 				    'tasktype' => 'assignment',
 				    'link' => '/task/show/'.$this->task->id,
 				    'sender' => [
-				    	'name' => $this->task->assigner->name,
+					    'name' => $this->task->assigner->name,
 					    'image' => $this->task->assigner->image,
 					    'link' => $this->task->assigner->link
-	                ]
+				    ]
 			    ];
-		    	break;
+			    break;
 		    case 2:
 			    return [
-			    	'title' => 'User assigned you new task',
-				    'message' => $this->task->assigner->name . ' je zadao/la novi zadatak - ' . $this->task->name,
+				    'title' => __('New task assigned'),
+				    'message' => __(':assigner has assigned you a new task :task', ['assigner' => $this->task->assigner->name, 'task' => $this->task->name]),
 				    'link' => '/task/show/'.$this->task->id,
 				    'tasktype' => 'assignment',
 				    'sender' => [
@@ -83,11 +83,11 @@ class TaskAssigned extends Notification
 					    'link' => $this->task->assigner->link
 				    ]
 			    ];
-		    	break;
+			    break;
 		    case 3:
 			    return [
-				    'title' => 'User requested cost approval',
-				    'message' => $this->task->assigner->name . ' je zatražio/la odobrenje troška - ' . $this->task->related->name,
+				    'title' => __('User requested cost approval'),
+				    'message' => __(':assigner has requested cost approval on :related', ['assigner' => $this->task->assigner->name, 'related' => $this->task->related->name]),
 				    'link' => '/task/show/'.$this->task->id,
 				    'sender' => [
 					    'name' => $this->task->assigner->name,
@@ -95,11 +95,11 @@ class TaskAssigned extends Notification
 					    'link' => $this->task->assigner->link
 				    ]
 			    ];
-		    	break;
+			    break;
 		    case 4:
-		    	return [
-				    'title' => 'Document uploaded',
-				    'message' => $this->task->assigner->name . ' je prenio dokument ',
+			    return [
+				    'title' => __('Document uploaded'),
+				    'message' => __(':assigner has uploaded a document in :related', ['assigner' => $this->task->assigner->name, 'related' => $this->task->name]),
 				    'link' => '/task/show/'.$this->task->id,
 				    'sender' => [
 					    'name' => $this->task->assigner->name,
@@ -107,11 +107,11 @@ class TaskAssigned extends Notification
 					    'link' => $this->task->assigner->link
 				    ]
 			    ];
-		    	break;
+			    break;
 		    case 5:
 			    return [
-				    'title' => 'Proposition Approval request',
-				    'message' => $this->task->assigner->name . ' je zatražio/la odobrenje propozicije ',
+				    'title' => __('Proposition Approval request'),
+				    'message' => __(':assigner has requested Proposition Approval', ['assigner' => $this->task->assigner->name]),
 				    'link' => '/task/show/'.$this->task->id,
 				    'sender' => [
 					    'name' => $this->task->assigner->name,
@@ -121,79 +121,9 @@ class TaskAssigned extends Notification
 			    ];
 			    break;
 	    }
-
     }
 
     public function toBroadcast($notifiable) {
-	    switch($this->task->type) {
-		    case 1:
-			    return new BroadcastMessage([ 'data' => [
-				    'title' => 'User assigned you new task',
-				    'message' => $this->task->assigner->name . ' je zadao/la novi zadatak - ' . $this->task->name,
-				    'tasktype' => 'assignment',
-				    'link' => '/task/show/'.$this->task->id,
-				    'sender' => [
-					    'name' => $this->task->assigner->name,
-					    'image' => $this->task->assigner->image,
-					    'link' => $this->task->assigner->link
-				    ]
-			    ]
-			    ]);
-		    	break;
-		    case 2:
-			    return new BroadcastMessage([ 'data' => [
-				    'title' => 'User assigned you new task',
-				    'message' => $this->task->assigner->name . ' je zadao/la novi zadatak - ' . $this->task->name,
-				    'tasktype' => 'assignment',
-				    'link' => '/task/show/'.$this->task->id,
-				    'sender' => [
-					    'name' => $this->task->assigner->name,
-					    'image' => $this->task->assigner->image,
-					    'link' => $this->task->assigner->link
-				    ]
-			    ]
-			    ]);
-		    	break;
-		    case 3:
-			    return new BroadcastMessage([ 'data' => [
-				    'title' => 'User requested cost approval',
-				    'message' => $this->task->assigner->name . ' je zatražio/la odobrenje troška - ' . $this->task->related->name,
-				    'link' => '/task/show/'.$this->task->id,
-				    'sender' => [
-					    'name' => $this->task->assigner->name,
-					    'image' => $this->task->assigner->image,
-					    'link' => $this->task->assigner->link
-				    ]
-			    ]
-			    ]);
-		    	break;
-		    case 4:
-			    return new BroadcastMessage([ 'data' => [
-				    'title' => 'Document uploaded',
-				    'message' => $this->task->assigner->name . ' je prenio dokument',
-				    'link' => '/task/show/'.$this->task->id,
-				    'sender' => [
-					    'name' => $this->task->assigner->name,
-					    'image' => $this->task->assigner->image,
-					    'link' => $this->task->assigner->link
-				    ]
-			    ]
-			    ]);
-			    break;
-		    case 5:
-			    return new BroadcastMessage([ 'data' => [
-				    'title' => 'Proposition Approval request',
-				    'message' => $this->task->assigner->name . ' je zatražio/la odobrenje propozicije ',
-				    'link' => '/task/show/'.$this->task->id,
-				    'sender' => [
-					    'name' => $this->task->assigner->name,
-					    'image' => $this->task->assigner->image,
-					    'link' => $this->task->assigner->link
-				    ]
-			    ]
-			    ]);
-			    break;
-	    }
-
+    	return new BroadcastMessage([ 'data' => $this->toArray($notifiable)]);
     }
 }

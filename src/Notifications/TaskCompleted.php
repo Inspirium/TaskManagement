@@ -58,13 +58,13 @@ class TaskCompleted extends Notification
     public function toArray($notifiable)
     {
 	    return [
-	    	'title' => 'Task has been marked as completed',
-		    'message' => $this->task->name,
+	    	'title' => __('Task has been marked as completed'),
+		    'message' => __(':assignee has marked task ":task" as completed', ['assignee' => $this->task->assignee->name, 'task' => $this->task->name]),
 		    'link' => '/task/show/'.$this->task->id,
 		    'sender' => [
-			    'name' => $this->task->employees[0],
-			    'image' => $this->task->employees[0]->image,
-			    'link' => $this->task->employees[0]->link
+			    'name' => $this->task->assignee->name,
+			    'image' => $this->task->assignee->image,
+			    'link' => $this->task->assignee->link
 		    ]
 	    ];
 
@@ -73,13 +73,13 @@ class TaskCompleted extends Notification
 	public function toBroadcast($notifiable)
 	{
 		return new BroadcastMessage([ 'data' => [
-			'title' => 'Task has been marked as completed',
-			'message' => $this->task->name,
+			'title' => __('Task has been marked as completed'),
+			'message' => __(':assignee has marked task ":task" as completed', ['assignee' => $this->task->assignee->name, 'task' => $this->task->name]),
 			'link' => '/task/show/'.$this->task->id,
 			'sender' => [
-				'name' => $this->task->employees[0],
-				'image' => $this->task->employees[0]->image,
-				'link' => $this->task->employees[0]->link
+				'name' => $this->task->assignee->name,
+				'image' => $this->task->assignee->image,
+				'link' => $this->task->assignee->link
 			]
 			]
 		]);

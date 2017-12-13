@@ -173,7 +173,7 @@ class Task extends Model {
 	}
 
 	public function assignNewThread() {
-		$t = Thread::create(['title' => $this->name]);
+		$t = Thread::create(['title' => __('Task: :name', ['name' => $this->name])]);
 		$t->users()->sync([$this->assignee_id, $this->assigner_id]);
 		$this->thread()->save($t);
 		$this->assignee->notify(new TaskAssigned($this));
