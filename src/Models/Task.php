@@ -82,16 +82,16 @@ class Task extends Model {
 
 	protected $appends = ['files'];
 
-	public function assigner() {
-		return $this->belongsTo('Inspirium\Models\HumanResources\Employee', 'assigner_id');
-	}
-
 	public function assignee() {
 		return $this->belongsTo('Inspirium\Models\HumanResources\Employee', 'assignee_id');
 	}
 
-	public function departments() {
-		return $this->belongsToMany('Inspirium\Models\HumanResources\Department', 'department_task_pivot', 'task_id', 'department_id')->withPivot('order');
+	public function assigner() {
+		return $this->belongsTo('Inspirium\Models\HumanResources\Employee', 'assigner_id');
+	}
+
+	public function department() {
+		return $this->belongsTo('Inspirium\Models\HumanResources\Department', 'department_id');
 	}
 
 	public function documents() {
@@ -170,6 +170,13 @@ class Task extends Model {
 				$employee->notify(new TaskAssigned($this));
 			}
 		}
+	}
+
+	public function assignNewThread() {
+		$t = Thread::create(['title' => $this->name]);
+		$t->users()->sync([$this->assignee_id, $this->assigner_id]);
+		$this->thread()->save($t);
+		$this->assignee->notify(new TaskAssigned($this));
 	}
 
 	//TODO: create Trait

@@ -12,6 +12,7 @@ Route::group(['namespace' => 'Inspirium\TaskManagement\Controllers\Api', 'middle
 
 	Route::group(['prefix' => 'task'], function() {
 		Route::get('{id}', 'TaskController@getTask');
+		Route::delete('{id}', 'TaskController@deleteTask');
 		Route::post('/', 'TaskController@postTask');
 		Route::put('{id}', 'TaskController@postTask');
 		Route::post('{id}/accept', 'TaskController@acceptTask');

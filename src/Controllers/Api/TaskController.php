@@ -9,38 +9,27 @@ use Illuminate\Support\Facades\Auth;
 use Inspirium\Models\HumanResources\Department;
 use Inspirium\Models\HumanResources\Employee;
 use Inspirium\TaskManagement\Models\Task;
+use Inspirium\TaskManagement\Notifications\TaskAssigned;
 
 class TaskController extends Controller {
 
 	public function getAllUserTasks() {
-		$employee = Auth::user();
-		$new_tasks = Task::whereHas('thread',function($query) use ($employee) {
-			$query->whereHas('users', function($query) use ($employee) {
-				$query->where('employee_id', $employee->id);
-			});
-		})->where('status', 'new')->where('assigner_id', '!=', $employee->id)->with('assigner')->get();
+		$employee = Auth::id();
+		$new_tasks = Task::with(['assigner', 'assignee'])->where('assignee_id', $employee)
+		                                                 ->where('status', 'new')->get();
 
-		$accepted_tasks = Task::whereHas('thread',function($query) use ($employee) {
-			$query->whereHas('users', function($query) use ($employee) {
-				$query->where('employee_id', $employee->id);
-			});
-		})->where('status', 'accepted')->where('assigner_id', '!=', $employee->id)->with('assigner')->get();
-		$sent_tasks = Task::where('assigner_id', $employee->id)->with('assigner')->get();
-		$rejected_tasks = Task::whereHas('thread',function($query) use ($employee) {
-			$query->whereHas('users', function($query) use ($employee) {
-				$query->where('employee_id', $employee->id);
-			});
-		})->where('status', 'rejected')->where('assigner_id', '!=', $employee->id)->with('assigner')->get();
-		$completed_tasks = Task::whereHas('thread',function($query) use ($employee) {
-			$query->whereHas('users', function($query) use ($employee) {
-				$query->where('employee_id', $employee->id);
-			});
-		})->where('status', 'completed')->where('assigner_id', '!=', $employee->id)->with('assigner')->get();
+		$accepted_tasks = Task::with(['assigner', 'assignee'])->where('assignee_id', $employee)
+		                                                      ->where('status', 'accepted')->get();
+		$sent_tasks = Task::with(['assigner', 'assignee'])->where('assigner_id', $employee)->get();
+		$rejected_tasks = Task::with(['assigner', 'assignee'])->where('assignee_id', $employee)
+		                                                      ->where('status', 'rejected')->get();
+		$completed_tasks = Task::with(['assigner', 'assignee'])->where('assignee_id', $employee)
+		                       ->where('status', 'completed')->get();
 		return response()->json(['new_tasks' => $new_tasks, 'accepted_tasks' => $accepted_tasks, 'sent_tasks' => $sent_tasks, 'rejected_tasks' => $rejected_tasks, 'completed_tasks' => $completed_tasks]);
 	}
 
 	public function getTask($id) {
-		$task = Task::with(['assigner', 'assignee', 'related', 'thread'])->find($id);
+		$task = Task::with(['related', 'thread', 'assigner', 'assignee'])->find($id);
 		return response()->json(['task' => $task]);
 	}
 
@@ -53,27 +42,35 @@ class TaskController extends Controller {
 			$task = new Task();
 		}
 		$task->name = $request->input('name');
-		$assigner = Auth::user();
-		$task->assigner()->associate($assigner);
+
 		$task->type = $request->input('type');
 		$task->description = $request->input('description');
 		$task->priority = $request->input('priority');
 		$deadline = Carbon::createFromFormat('d. m. Y.', $request->input('deadline'));
 		$task->deadline = $deadline->toDateTimeString();
 		$task->status = 'new';
-		$task->assignee_id = $request->input('users')[0]['id'];
+		$task->assigner()->associate(Auth::user());
+		$assignee = Employee::find($request->input('users')[0]['id']);
+		$task->assignee()->associate($assignee);
+		$task->department_id = $assignee->department_id;
 		$task->save();
-		$task->assignThread($request->input('users'));
+		$task->assignNewThread();
 		return response()->json([]);
 	}
 
-	public function reassignTask( Request $request, $id) {
+	public function deleteTask($id) {
+		Task::destroy($id);
+		return response()->json([]);
+	}
+
+	public function reassignTask(Request $request, $id) {
 		$task = Task::find($id);
-		$employees = array_pluck($request->input('employees'), 'id');
-		$task->thread->users()->attach( $employees );
-		$task->assignee_id = $employees[0];
+		$assignee = Employee::find($request->input('employees')[0]['id']);
+		$task->thread->users()->syncWithoutDetaching($assignee->id);
+		$task->assignee()->associate($assignee);
 		$task->save();
-		$task->load(['thread', 'assignee', 'assigner']);
+		$assignee->notify(new TaskAssigned($task));
+		$task->load(['thread', 'assignee', 'assigner', 'related']);
 		return response()->json($task);
 	}
 
@@ -128,13 +125,10 @@ class TaskController extends Controller {
 
 	public function getDepartmentTasks($id) {
 		$department = Department::find($id);
-		$new_tasks = $department->tasks->filter(function($value, $key) {
-			return $value->status === 'new';
-		});
-		$old_tasks = $department->tasks->filter(function($value, $key) {
-			return $value->status !== 'new';
-		});
-		return response()->json(['new_tasks' => $new_tasks, 'old_tasks' => $old_tasks]);
+		$employees = $department->employees()->with(['tasks' => function($query) {
+			$query->with(['assigner', 'assignee']);
+		}])->get();
+		return response()->json(['department' => $department, 'employees' => $employees]);
 	}
 
 	public function completeTask(Request $request, $id) {
