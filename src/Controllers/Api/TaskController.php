@@ -10,6 +10,7 @@ use Inspirium\Models\HumanResources\Department;
 use Inspirium\Models\HumanResources\Employee;
 use Inspirium\TaskManagement\Models\Task;
 use Inspirium\TaskManagement\Notifications\TaskAssigned;
+use Inspirium\TaskManagement\Notifications\TaskDeleted;
 
 class TaskController extends Controller {
 
@@ -59,7 +60,16 @@ class TaskController extends Controller {
 	}
 
 	public function deleteTask($id) {
+		$task = Task::find($id);
+		$task->load('thread');
+		foreach($task->thread->users as $user) {
+			if ($user->id !== Auth::id()) {
+				$user->notify( new TaskDeleted( $task, Auth::user() ) );
+			}
+		}
+		$task->thread()->delete();
 		Task::destroy($id);
+
 		return response()->json([]);
 	}
 
