@@ -16,6 +16,6 @@ class TaskObserver {
 	}
 
 	public function completed(Task $task) {
-		$task->assigner->user->notify(new TaskCompleted($task));
+		$task->assigner->notify(new TaskCompleted($task));
 	}
 }
