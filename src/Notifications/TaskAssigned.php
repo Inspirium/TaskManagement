@@ -123,6 +123,19 @@ class TaskAssigned extends Notification
 				    ]
 			    ];
 			    break;
+		    case 6:
+		    	return [
+				    'title' => __('Task Order Approval Request'),
+				    'message' => __(':assigner has requested task order approval', ['assigner' => $this->task->assigner->name]),
+				    'link' => '/task/department/1',
+				    'tasktype' => 'approval',
+				    'sender' => [
+					    'name' => $this->task->assigner->name,
+					    'image' => $this->task->assigner->image,
+					    'link' => $this->task->assigner->link
+				    ]
+			    ];
+		    	break;
 	    }
     }
 

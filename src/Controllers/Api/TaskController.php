@@ -52,10 +52,12 @@ class TaskController extends Controller {
 		$task->status = 'new';
 		$task->assigner()->associate(Auth::user());
 		$assignee = Employee::find($request->input('users')[0]['id']);
+		$task->order = $assignee->tasks->count() + 1;
 		$task->assignee()->associate($assignee);
 		$task->department_id = $assignee->department_id;
 		$task->save();
 		$task->assignNewThread();
+
 		return response()->json([]);
 	}
 
@@ -76,6 +78,7 @@ class TaskController extends Controller {
 	public function reassignTask(Request $request, $id) {
 		$task = Task::find($id);
 		$assignee = Employee::find($request->input('employees')[0]['id']);
+		$task->order = $assignee->tasks->count()+1;
 		$task->thread->users()->syncWithoutDetaching($assignee->id);
 		$task->assignee()->associate($assignee);
 		$task->save();
@@ -126,17 +129,44 @@ class TaskController extends Controller {
 	}
 
 	public function updateOrder(Request $request) {
-		$employee = Auth::user();
-		$order = $request->input('tasks');
-		foreach ($order as $o => $i) {
-			$employee->tasks()->updateExistingPivot($i, ['order' => $o]);
+		$i = 0 ;
+		foreach ($request->input('tasks') as $task_id) {
+			$task = Task::find($task_id);
+			$task->order = $i;
+			$task->new_order = null;
+			$task->save();
+			$i++;
 		}
+	}
+
+	public function requestOrder(Request $request) {
+		$i = 1;
+		foreach ($request->input('tasks') as $task_id) {
+			$task = Task::find($task_id);
+			$task->new_order = $i;
+			$task->save();
+			$i++;
+		}
+		$task = new Task();
+		$task->name = __('Task order approval request');
+
+		$task->type = 6;
+		$task->description = $request->input('task.description');
+		$task->priority = 'medium';
+		$task->status = 'new';
+		$task->assigner()->associate(Auth::user());
+		$assignee = Employee::find($request->input('task.employees')[0]['id']);
+		$task->order = $assignee->tasks->count() + 1;
+		$task->assignee()->associate($assignee);
+		$task->department_id = $assignee->department_id;
+		$task->save();
+		$task->assignNewThread();
 	}
 
 	public function getDepartmentTasks($id) {
 		$department = Department::find($id);
 		$employees = $department->employees()->with(['tasks' => function($query) {
-			$query->with(['assigner', 'assignee']);
+			$query->with(['assigner', 'assignee'])->orderBy('order', 'ASC');
 		}])->get();
 		return response()->json(['department' => $department, 'employees' => $employees]);
 	}
