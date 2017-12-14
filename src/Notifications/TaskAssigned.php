@@ -89,6 +89,7 @@ class TaskAssigned extends Notification
 				    'title' => __('User requested cost approval'),
 				    'message' => __(':assigner has requested cost approval on :related', ['assigner' => $this->task->assigner->name, 'related' => $this->task->related->name]),
 				    'link' => '/task/show/'.$this->task->id,
+				    'tasktype' => 'cost',
 				    'sender' => [
 					    'name' => $this->task->assigner->name,
 					    'image' => $this->task->assigner->image,
@@ -101,6 +102,7 @@ class TaskAssigned extends Notification
 				    'title' => __('Document uploaded'),
 				    'message' => __(':assigner has uploaded a document in :related', ['assigner' => $this->task->assigner->name, 'related' => $this->task->name]),
 				    'link' => '/task/show/'.$this->task->id,
+				    'tasktype' => 'document',
 				    'sender' => [
 					    'name' => $this->task->assigner->name,
 					    'image' => $this->task->assigner->image,
@@ -113,6 +115,7 @@ class TaskAssigned extends Notification
 				    'title' => __('Proposition Approval request'),
 				    'message' => __(':assigner has requested Proposition Approval', ['assigner' => $this->task->assigner->name]),
 				    'link' => '/task/show/'.$this->task->id,
+				    'tasktype' => 'approval',
 				    'sender' => [
 					    'name' => $this->task->assigner->name,
 					    'image' => $this->task->assigner->image,
