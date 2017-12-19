@@ -2,6 +2,7 @@
 
 namespace Inspirium\TaskManagement\Controllers\Api;
 
+use Illuminate\Auth\Access\AuthorizationException;
 use Inspirium\Http\Controllers\Controller;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -129,6 +130,13 @@ class TaskController extends Controller {
 	}
 
 	public function updateOrder(Request $request) {
+		$employee = Employee::find($request->input('employee'));
+		try {
+			$this->authorize( 'approveTaskOrder', $employee );
+		}
+		catch (AuthorizationException $e) {
+			return response()->json(['error' => 'unauthorized'], 403);
+		}
 		$i = 0 ;
 		foreach ($request->input('tasks') as $task_id) {
 			$task = Task::find($task_id);
@@ -140,6 +148,13 @@ class TaskController extends Controller {
 	}
 
 	public function requestOrder(Request $request) {
+		$employee = Employee::find($request->input('employee'));
+		try {
+			$this->authorize( 'requestTaskOrder', $employee );
+		}
+		catch (AuthorizationException $e) {
+			return response()->json(['error' => 'unauthorized'], 403);
+		}
 		$i = 1;
 		foreach ($request->input('tasks') as $task_id) {
 			$task = Task::find($task_id);
@@ -166,8 +181,10 @@ class TaskController extends Controller {
 
 	public function getDepartmentTasks($id) {
 		$department = Department::find($id);
-		$employees = $department->employees()->with(['tasks' => function($query) {
-			$query->with(['assigner', 'assignee'])->orderBy('order', 'ASC');
+		$order = Auth::user()->can('requestTaskOrder', $department)?'order':'new_order';
+		$employees = $department->employees()->with(['tasks' => function($query) use ($order) {
+
+			$query->with(['assigner', 'assignee'])->orderBy($order, 'ASC');
 		}])->get();
 		return response()->json(['department' => $department, 'employees' => $employees]);
 	}
