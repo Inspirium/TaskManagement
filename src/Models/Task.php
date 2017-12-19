@@ -57,6 +57,25 @@ use Inspirium\TaskManagement\Notifications\TaskCompleted;
  * @property-read \Inspirium\Messaging\Models\Thread $thread
  * @method static \Illuminate\Database\Eloquent\Builder|\Inspirium\TaskManagement\Models\Task whereParentId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\Inspirium\TaskManagement\Models\Task whereStatusInfo($value)
+ * @property int|null $order
+ * @property int|null $new_order
+ * @property int|null $department_id
+ * @property int|null $assignee_id
+ * @property int|null $thread_id
+ * @property int $is_running
+ * @property \Carbon\Carbon|null $running_from
+ * @property int|null $running_elapsed
+ * @property-read \Inspirium\Models\HumanResources\Employee|null $assignee
+ * @property-read \Inspirium\Models\HumanResources\Department|null $department
+ * @property-read mixed $files
+ * @method static \Illuminate\Database\Eloquent\Builder|\Inspirium\TaskManagement\Models\Task whereAssigneeId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Inspirium\TaskManagement\Models\Task whereDepartmentId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Inspirium\TaskManagement\Models\Task whereIsRunning($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Inspirium\TaskManagement\Models\Task whereNewOrder($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Inspirium\TaskManagement\Models\Task whereOrder($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Inspirium\TaskManagement\Models\Task whereRunningElapsed($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Inspirium\TaskManagement\Models\Task whereRunningFrom($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\Inspirium\TaskManagement\Models\Task whereThreadId($value)
  */
 class Task extends Model {
 
@@ -81,7 +100,7 @@ class Task extends Model {
 
 	protected $with = [ 'documents'];
 
-	protected $appends = ['files'];
+	protected $appends = ['files', 'link'];
 
 	public function assignee() {
 		return $this->belongsTo('Inspirium\Models\HumanResources\Employee', 'assignee_id');
@@ -112,6 +131,10 @@ class Task extends Model {
 			return $value;
 		}
 		return 2;
+	}
+
+	public function getLinkAttribute() {
+		return '/task/show/' . $this->id;
 	}
 
 	public function getRelatedLinkAttribute($value) {
