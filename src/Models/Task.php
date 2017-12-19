@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Inspirium\Models\Messaging\Thread;
 use Inspirium\TaskManagement\Notifications\TaskAssigned;
+use Inspirium\TaskManagement\Notifications\TaskCompleted;
 
 /**
  * Inspirium\TaskManagement\Models\Task
@@ -181,10 +182,10 @@ class Task extends Model {
 
 	//TODO: create Trait
 	public function triggerAssigned() {
-		//$this->fireModelEvent('assigned');
+		$this->assignee->notify(new TaskAssigned($this));
 	}
 
 	public function triggerCompleted() {
-		$this->fireModelEvent('completed');
+		$this->assigner->notify(new TaskCompleted($this));
 	}
 }
