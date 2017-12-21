@@ -3,6 +3,8 @@
 namespace Inspirium\TaskManagement\Controllers\Api;
 
 use Illuminate\Auth\Access\AuthorizationException;
+use Inspirium\BookProposition\Notifications\PropositionAccepted;
+use Inspirium\BookProposition\Notifications\PropositionDenied;
 use Inspirium\Http\Controllers\Controller;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -11,6 +13,7 @@ use Inspirium\Models\HumanResources\Department;
 use Inspirium\Models\HumanResources\Employee;
 use Inspirium\TaskManagement\Models\Task;
 use Inspirium\TaskManagement\Notifications\TaskAssigned;
+use Inspirium\TaskManagement\Notifications\TaskCompleted;
 use Inspirium\TaskManagement\Notifications\TaskDeleted;
 
 class TaskController extends Controller {
@@ -106,6 +109,11 @@ class TaskController extends Controller {
 			$proposition->save();
 			$task->status = 'completed';
 			$task->save();
+			foreach ($task->thread->users as $user) {
+				if ($user->id !== Auth::id()) {
+					$user->notify( new PropositionAccepted( $task ) );
+				}
+			}
 		}
 		return response()->json([]);
 	}
@@ -125,6 +133,11 @@ class TaskController extends Controller {
 			$proposition->save();
 			$task->status = 'completed';
 			$task->save();
+			foreach ($task->thread->users as $user) {
+				if ($user->id !== Auth::id()) {
+					$user->notify( new PropositionDenied( $task ) );
+				}
+			}
 		}
 		return response()->json([]);
 	}
