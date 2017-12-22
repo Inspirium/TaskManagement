@@ -62,7 +62,7 @@ class TaskAssigned extends Notification
 			    return [
 				    'title' => __('New task assigned'),
 				    'message' => __(':assigner has assigned you a new task :task', ['assigner' => $this->task->assigner->name, 'task' => $this->task->name]),
-				    'tasktype' => 'assignment',
+				    'tasktype' => __('assignment'),
 				    'link' => '/task/show/'.$this->task->id,
 				    'sender' => [
 					    'name' => $this->task->assigner->name,
@@ -76,7 +76,7 @@ class TaskAssigned extends Notification
 				    'title' => __('New task assigned'),
 				    'message' => __(':assigner has assigned you a new task :task', ['assigner' => $this->task->assigner->name, 'task' => $this->task->name]),
 				    'link' => '/task/show/'.$this->task->id,
-				    'tasktype' => 'assignment',
+				    'tasktype' => __('assignment'),
 				    'sender' => [
 					    'name' => $this->task->assigner->name,
 					    'image' => $this->task->assigner->image,
@@ -89,7 +89,7 @@ class TaskAssigned extends Notification
 				    'title' => __('User requested cost approval'),
 				    'message' => __(':assigner has requested cost approval on :related', ['assigner' => $this->task->assigner->name, 'related' => $this->task->related->name]),
 				    'link' => '/task/show/'.$this->task->id,
-				    'tasktype' => 'cost',
+				    'tasktype' => __('cost'),
 				    'sender' => [
 					    'name' => $this->task->assigner->name,
 					    'image' => $this->task->assigner->image,
@@ -102,7 +102,7 @@ class TaskAssigned extends Notification
 				    'title' => __('Document uploaded'),
 				    'message' => __(':assigner has uploaded a document in :related', ['assigner' => $this->task->assigner->name, 'related' => $this->task->name]),
 				    'link' => '/task/show/'.$this->task->id,
-				    'tasktype' => 'document',
+				    'tasktype' => __('document'),
 				    'sender' => [
 					    'name' => $this->task->assigner->name,
 					    'image' => $this->task->assigner->image,
@@ -115,7 +115,7 @@ class TaskAssigned extends Notification
 				    'title' => __('Proposition Approval request'),
 				    'message' => __(':assigner has requested Proposition Approval', ['assigner' => $this->task->assigner->name]),
 				    'link' => '/task/show/'.$this->task->id,
-				    'tasktype' => 'approval',
+				    'tasktype' => __('approval'),
 				    'sender' => [
 					    'name' => $this->task->assigner->name,
 					    'image' => $this->task->assigner->image,
@@ -128,7 +128,7 @@ class TaskAssigned extends Notification
 				    'title' => __('Task Order Approval Request'),
 				    'message' => __(':assigner has requested task order approval', ['assigner' => $this->task->assigner->name]),
 				    'link' => $this->task->related_link,
-				    'tasktype' => 'approval',
+				    'tasktype' => __('approval'),
 				    'sender' => [
 					    'name' => $this->task->assigner->name,
 					    'image' => $this->task->assigner->image,

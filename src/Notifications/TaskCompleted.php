@@ -61,7 +61,7 @@ class TaskCompleted extends Notification
 	    	'title' => __('Task has been marked as completed'),
 		    'message' => __(':assignee has marked task ":task" as completed', ['assignee' => $this->task->assignee->name, 'task' => $this->task->name]),
 		    'link' => '/task/show/'.$this->task->id,
-		    'tasktype' => 'task',
+		    'tasktype' => __('task'),
 		    'sender' => [
 			    'name' => $this->task->assignee->name,
 			    'image' => $this->task->assignee->image,

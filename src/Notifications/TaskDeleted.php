@@ -63,8 +63,8 @@ class TaskDeleted extends Notification
 	    return [
 		    'title' => __('Task has been deleted'),
 		    'message' => __(':user has deleted a task :task', ['user' => $this->user->name, 'task' => $this->task->name]),
-		    'tasktype' => 'task',
-		    'link' => '',
+		    'tasktype' => __('task'),
+		    'link' => '/tasks',
 		    'sender' => [
 			    'name' => $this->user->name,
 			    'image' => $this->user->image,
