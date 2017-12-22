@@ -115,7 +115,7 @@ class Task extends Model {
 	}
 
 	public function documents() {
-		return $this->belongsToMany('Inspirium\Models\FileManagement\File', 'tasks_documents', 'document_id', 'task_id')->withPivot('is_final');
+		return $this->belongsToMany('Inspirium\Models\FileManagement\File', 'tasks_documents', 'task_id', 'document_id')->withPivot('is_final');
 	}
 
 	public function related() {
