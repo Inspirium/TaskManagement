@@ -57,6 +57,7 @@ class TaskController extends Controller {
 		$task->assigner()->associate(Auth::user());
 		$assignee = Employee::find($request->input('users')[0]['id']);
 		$task->order = $assignee->tasks->count() + 1;
+		$task->new_order = $assignee->tasks->count() + 1;
 		$task->assignee()->associate($assignee);
 		$task->department_id = $assignee->department_id;
 		$task->save();
@@ -83,6 +84,7 @@ class TaskController extends Controller {
 		$task = Task::find($id);
 		$assignee = Employee::find($request->input('employees')[0]['id']);
 		$task->order = $assignee->tasks->count()+1;
+		$task->new_order = $assignee->tasks->count() + 1;
 		$task->thread->users()->syncWithoutDetaching($assignee->id);
 		$task->assignee()->associate($assignee);
 		$task->save();
@@ -185,6 +187,7 @@ class TaskController extends Controller {
 		$task->assigner()->associate(Auth::user());
 		$assignee = Employee::find($request->input('task.employees')[0]['id']);
 		$task->order = $assignee->tasks->count() + 1;
+		$task->new_order = $assignee->tasks->count() + 1;
 		$task->related_link = '/tasks/department/' . $assignee->department_id;
 		$task->assignee()->associate($assignee);
 		$task->department_id = $assignee->department_id;
