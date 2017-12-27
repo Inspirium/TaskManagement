@@ -188,7 +188,7 @@ class TaskController extends Controller {
 		$assignee = Employee::find($request->input('task.employees')[0]['id']);
 		$task->order = $assignee->tasks->count() + 1;
 		$task->new_order = $assignee->tasks->count() + 1;
-		$task->related_link = '/tasks/department/' . $assignee->department_id;
+		$task->related_link = '/tasks/department/' . $assignee->department_id . '/#employee-'.$employee->id;
 		$task->assignee()->associate($assignee);
 		$task->department_id = $assignee->department_id;
 		$task->save();
