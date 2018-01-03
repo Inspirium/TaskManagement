@@ -195,16 +195,6 @@ class TaskController extends Controller {
 		$task->assignNewThread();
 	}
 
-	public function getDepartmentTasks($id) {
-		$department = Department::find($id);
-		$order = Auth::user()->can('requestTaskOrder', $department)?'order':'new_order';
-		$employees = $department->employees()->with(['tasks' => function($query) use ($order) {
-
-			$query->with(['assigner', 'assignee'])->orderBy($order, 'ASC');
-		}])->get();
-		return response()->json(['department' => $department, 'employees' => $employees]);
-	}
-
 	public function completeTask(Request $request, $id) {
 		$task = Task::find($id);
 		$task->status = 'completed';
