@@ -46,10 +46,12 @@ class TaskController extends Controller {
 		$task->name = $request->input('name');
 
 		$task->type = $request->input('type');
-		$task->description = $request->input('description');
-		$task->priority = $request->input('priority');
-		$deadline = Carbon::createFromFormat('!d. m. Y.', $request->input('deadline'));
-		$task->deadline = $deadline->toDateTimeString();
+		$task->description = $request->input('description')?$request->input('description'):'';
+		$task->priority = $request->input('priority')?$request->input('priority'):'low';
+		if ($request->input('deadline')) {
+			$deadline       = Carbon::createFromFormat( '!d. m. Y.', $request->input( 'deadline' ) );
+			$task->deadline = $deadline->toDateTimeString();
+		}
 		$task->status = 'new';
 		$task->assigner()->associate(Auth::user());
 		$assignee = Employee::find($request->input('users')[0]['id']);
