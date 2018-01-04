@@ -18,6 +18,9 @@ class DepartmentController extends Controller {
 		if (!$sort) {
 			$sort = \Auth::user()->can( 'requestTaskOrder', $employee->department ) ? 'order' : 'new_order';
 		}
+		if (!$order) {
+			$order = 'asc';
+		}
 		$tasks = Task::where('assignee_id', $employee->id)->with(['assigner', 'assignee'])->limit($limit)->offset($offset)->orderBy($sort, $order)->get();
 		$total = Task::whereAssigneeId($employee->id)->count();
 		return response()->json(['tasks' => $tasks, 'total' => $total]);
@@ -36,11 +39,11 @@ class DepartmentController extends Controller {
 		catch (AuthorizationException $e) {
 			return response()->json(['error' => 'unauthorized'], 403);
 		}
-		$i = 0 ;
+		$i = 1 ;
 		foreach ($request->input('tasks') as $task_id) {
 			$task = Task::find($task_id);
 			$task->order = $i;
-			$task->new_order = null;
+			$task->new_order = $i;
 			$task->save();
 			$i++;
 		}

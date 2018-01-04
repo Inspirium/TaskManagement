@@ -48,7 +48,7 @@ class TaskController extends Controller {
 		$task->type = $request->input('type');
 		$task->description = $request->input('description');
 		$task->priority = $request->input('priority');
-		$deadline = Carbon::createFromFormat('d. m. Y.', $request->input('deadline'));
+		$deadline = Carbon::createFromFormat('!d. m. Y.', $request->input('deadline'));
 		$task->deadline = $deadline->toDateTimeString();
 		$task->status = 'new';
 		$task->assigner()->associate(Auth::user());
