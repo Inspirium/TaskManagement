@@ -8,6 +8,7 @@ Route::group(['namespace' => 'Inspirium\TaskManagement\Controllers\Api', 'middle
 		Route::any('/', 'TaskController@getAllUserTasks');
 		Route::post('updateOrder', 'DepartmentController@updateOrder');
 		Route::post('requestOrder', 'DepartmentController@requestOrder');
+		Route::post('rejectOrder', 'DepartmentController@rejectOrder');
 		Route::get('department/{department}', 'DepartmentController@getDepartment');
 		Route::post('employee/{employee}', 'DepartmentController@employeeTasks');
 	});

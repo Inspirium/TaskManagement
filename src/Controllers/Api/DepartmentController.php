@@ -50,6 +50,22 @@ class DepartmentController extends Controller {
 		return response()->json([]);
 	}
 
+	public function rejectOrder(Request $request) {
+		$employee = Employee::find($request->input('employee'));
+		try {
+			$this->authorize( 'approveTaskOrder', $employee );
+		}
+		catch (AuthorizationException $e) {
+			return response()->json(['error' => 'unauthorized'], 403);
+		}
+		foreach ($request->input('tasks') as $task_id) {
+			$task = Task::find($task_id);
+			$task->new_order = $task->order;
+			$task->save();
+		}
+		return response()->json([]);
+	}
+
 	public function requestOrder(Request $request) {
 		$employee = Employee::find($request->input('employee'));
 		try {
