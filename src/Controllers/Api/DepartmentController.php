@@ -95,6 +95,7 @@ class DepartmentController extends Controller {
 		$task->related_link = '/tasks/department/' . $employee->department_id . '/#employee-'.$employee->id;
 		$task->assignee()->associate($assignee);
 		$task->department_id = $assignee->department_id;
+		$task->related()->associate($employee);
 		$task->save();
 		$task->assignNewThread();
 		return response()->json([]);
