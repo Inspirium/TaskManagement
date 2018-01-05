@@ -59,7 +59,7 @@ class TaskOrderRejected extends Notification
     {
 	    return [
 	    	'title' => __('Task order has been rejected'),
-		    'message' => __(':assignee has rejected task order for :employee', ['assignee' => $this->task->assignee->name, 'task' => $this->task->related->name]),
+		    'message' => __(':assignee has rejected task order for :employee', ['assignee' => $this->task->assignee->name, 'employee' => $this->task->related->name]),
 		    'link' => '/task/show/'.$this->task->id,
 		    'tasktype' => __('task'),
 		    'sender' => [
