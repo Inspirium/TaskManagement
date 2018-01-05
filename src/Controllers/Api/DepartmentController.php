@@ -8,6 +8,8 @@ use Inspirium\Http\Controllers\Controller;
 use Inspirium\Models\HumanResources\Department;
 use Inspirium\Models\HumanResources\Employee;
 use Inspirium\TaskManagement\Models\Task;
+use Inspirium\TaskManagement\Notifications\TaskOrderApproved;
+use Inspirium\TaskManagement\Notifications\TaskOrderRejected;
 
 class DepartmentController extends Controller {
 	public function employeeTasks(Request $request, Employee $employee) {
@@ -47,6 +49,12 @@ class DepartmentController extends Controller {
 			$task->save();
 			$i++;
 		}
+		$task = Task::where('related_id' ,$employee->id)->first();
+		if ($task) {
+			$task->status = 'completed';
+			$task->save();
+			$task->assigner->notify(new TaskOrderApproved($task));
+		}
 		return response()->json([]);
 	}
 
@@ -62,6 +70,12 @@ class DepartmentController extends Controller {
 			$task = Task::find($task_id);
 			$task->new_order = $task->order;
 			$task->save();
+		}
+		$task = Task::where('related_id' ,$employee->id)->first();
+		if ($task) {
+			$task->status = 'completed';
+			$task->save();
+			$task->assigner->notify(new TaskOrderRejected($task));
 		}
 		return response()->json([]);
 	}
