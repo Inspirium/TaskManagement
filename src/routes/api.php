@@ -11,6 +11,8 @@ Route::group(['namespace' => 'Inspirium\TaskManagement\Controllers\Api', 'middle
 		Route::post('rejectOrder', 'DepartmentController@rejectOrder');
 		Route::get('department/{department}', 'DepartmentController@getDepartment');
 		Route::post('employee/{employee}', 'DepartmentController@employeeTasks');
+		Route::post('employee/{employee}/{type}', 'EmployeeController@employeeTasks');
+
 	});
 
 	Route::group(['prefix' => 'task'], function() {
