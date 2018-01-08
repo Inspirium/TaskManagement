@@ -15,6 +15,7 @@ class EmployeeController extends Controller {
 
 		if ('sent' === $type) {
 			$tasks = Task::with(['assigner', 'assignee'])->where('assigner_id', $employee->id)->orderBy($sort?$sort:'id', $order?$order:'asc')->limit($limit)->offset($offset)->get();
+			$total = Task::with(['assigner', 'assignee'])->where('assigner_id', $employee->id)->count();
 		}
 		else {
 			$tasks = Task::with( [
@@ -22,7 +23,12 @@ class EmployeeController extends Controller {
 				'assignee'
 			] )->where( 'assignee_id', $employee->id )
 			             ->where( 'status', $type )->orderBy($sort?$sort:'id', $order?$order:'asc')->limit($limit)->offset($offset)->get();
+			$total = Task::with( [
+				'assigner',
+				'assignee'
+			] )->where( 'assignee_id', $employee->id )
+			             ->where( 'status', $type )->count();
 		}
-		return response()->json(['rows' => $tasks, 'total' => count($tasks)]);
+		return response()->json(['rows' => $tasks, 'total' => $total]);
 	}
 }
