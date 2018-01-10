@@ -52,6 +52,10 @@ class TaskController extends Controller {
 			$deadline       = Carbon::createFromFormat( '!d. m. Y.', $request->input( 'deadline' ) );
 			$task->deadline = $deadline->toDateTimeString();
 		}
+		else {
+			$task->deadline = null;
+		}
+
 		$task->status = 'new';
 		$task->assigner()->associate(Auth::user());
 		$assignee = Employee::find($request->input('users')[0]['id']);
