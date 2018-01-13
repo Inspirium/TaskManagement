@@ -81,6 +81,33 @@ class Task extends Model {
 
 	use SoftDeletes;
 
+	private $types = [
+		1 => [
+			'title'     => 'Proposition task',
+			'className' => 'tasktype-1'
+		],
+		2 => [
+			'title'     => 'Assignment',
+			'className' => 'tasktype-2'
+		],
+		3 => [
+			'title'     => 'Approval Request',
+			'className' => 'tasktype-3'
+		],
+		4 => [
+			'title'     => 'Proposition task',
+			'className' => 'tasktype-1'
+		],
+		5 => [
+			'title'     => 'Proposition Approval',
+			'className' => 'tasktype-5'
+		],
+		6 => [
+			'title'     => 'Task Order',
+			'className' => 'tasktype-6'
+		]
+	];
+
 	protected $table = 'tasks';
 
 	protected $guarded = [];
@@ -100,7 +127,7 @@ class Task extends Model {
 
 	protected $with = [ 'documents'];
 
-	protected $appends = ['files', 'link'];
+	protected $appends = ['files', 'link', 'formatted_type'];
 
 	public function assignee() {
 		return $this->belongsTo('Inspirium\Models\HumanResources\Employee', 'assignee_id');
@@ -176,6 +203,10 @@ class Task extends Model {
 				'path'    => 'tasks'
 			];
 		}
+	}
+
+	public function getFormattedTypeAttribute() {
+		return $this->types[$this->type];
 	}
 
 	public function assignThread($employees) {

@@ -61,7 +61,7 @@ class TaskOrderApproved extends Notification
 	    	'title' => __('Task order has been approved'),
 		    'message' => __(':assignee has approved task order for :employee', ['assignee' => $this->task->assignee->name, 'employee' => $this->task->related->name]),
 		    'link' => '/task/show/'.$this->task->id,
-		    'tasktype' => [ 'title' => __('Task Order'), 'className' => 'tasktype-6'],
+		    'tasktype' => $this->task->formatted_type,
 		    'sender' => [
 			    'name' => $this->task->assignee->name,
 			    'image' => $this->task->assignee->image,
