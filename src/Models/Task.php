@@ -103,7 +103,7 @@ class Task extends Model {
 			'className' => 'tasktype-5'
 		],
 		6 => [
-			'title'     => 'Task Order',
+			'title'     => 'Task order',
 			'className' => 'tasktype-6'
 		]
 	];
