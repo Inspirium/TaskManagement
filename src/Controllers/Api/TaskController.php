@@ -176,7 +176,8 @@ class TaskController extends Controller {
 			$final = true;
 		}
 		if ($task->type == 4) {
-			$task->related->documents()->attach($request->input( 'file.id' ), [ 'is_final' => $final, 'type' => $task->related_link ]);
+			$type = last(explode('/', $task->related_link));
+			$task->related->documents()->attach($request->input( 'file.id' ), [ 'final' => $final, 'type' => $type ]);
 		}
 		else {
 			$task->documents()->attach( $request->input( 'file.id' ), [ 'is_final' => $final ] );

@@ -183,7 +183,7 @@ class Task extends Model {
 
 	public function getFilesAttribute() {
 		if ($this->type == 4) {
-			$type = $this->related_link;
+			$type = last(explode('/', $this->related_link));
 			return [
 				'initial' => $this->related->documents()->wherePivot( 'type', $type )->wherePivot( 'final', false )->get(),
 				'final' => $this->related->documents()->wherePivot( 'type', $type )->wherePivot( 'final', true )->get(),
@@ -191,15 +191,9 @@ class Task extends Model {
 			];
 		}
 		else {
-			$value = $this->documents;
-
 			return [
-				'initial' => $value->filter( function ( $element ) {
-					return ! $element->is_final;
-				} ),
-				'final'   => $value->filter( function ( $element ) {
-					return $element->is_final;
-				} ),
+				'initial' => $this->documents()->wherePivot('is_final', false)->get(),
+				'final'   => $this->documents()->wherePivot('is_final', true)->get(),
 				'path'    => 'tasks'
 			];
 		}
