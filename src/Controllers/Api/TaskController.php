@@ -58,12 +58,26 @@ class TaskController extends Controller {
 
 		$task->status = 'new';
 		$task->assigner()->associate(Auth::user());
-		$assignee = Employee::find($request->input('users')[0]['id']);
+		if (count($request->input('users'))) {
+			$assignee = Employee::find( $request->input( 'users' )[0]['id'] );
+		}
+		else {
+			$assignee = Auth::user();
+		}
 		$task->order = $assignee->tasks->count() + 1;
 		$task->new_order = $assignee->tasks->count() + 1;
 		$task->assignee()->associate($assignee);
 		$task->department_id = $assignee->department_id;
 		$task->save();
+		$final = collect($request->input('files.final'))->mapWithKeys(function($el) {
+			return [$el['id'] => ['is_final' => true]];
+		});
+		$initial = collect($request->input('files.initial'))->mapWithKeys(function($el) {
+			return [$el['id'] => ['is_final' => false]];
+		});
+		$initial = $initial->all();
+		$final = $final->all();
+		$task->documents()->sync($initial + $final);
 		$task->assignNewThread();
 
 		return response()->json([]);
