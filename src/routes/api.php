@@ -25,6 +25,7 @@ Route::group(['namespace' => 'Inspirium\TaskManagement\Controllers\Api', 'middle
 		Route::post('{id}/reassign', 'TaskController@reassignTask');
 		Route::post('{id}/complete', 'TaskController@completeTask');
 		Route::post('{id}/file', 'TaskController@fileSave');
+		Route::post('{id}/resend', 'TaskController@resendTask');
 
 
 		Route::post('{id}/clock/{action}', 'TaskController@clock');

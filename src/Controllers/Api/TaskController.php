@@ -12,6 +12,7 @@ use Inspirium\Models\HumanResources\Employee;
 use Inspirium\TaskManagement\Models\Task;
 use Inspirium\TaskManagement\Notifications\TaskAssigned;
 use Inspirium\TaskManagement\Notifications\TaskDeleted;
+use Inspirium\TaskManagement\Notifications\TaskResent;
 
 class TaskController extends Controller {
 
@@ -197,6 +198,14 @@ class TaskController extends Controller {
 			$task->documents()->attach( $request->input( 'file.id' ), [ 'is_final' => $final ] );
 		}
 		return response()->json([]);
+	}
+
+	public function resendTask(Request $request, $id) {
+		$task = Task::find($id);
+		$task->status = 'accepted';
+		$task->order = 1;
+		$task->save();
+		$task->assignee->notify(new TaskResent($task, Auth::user()));
 	}
 
 }
