@@ -125,7 +125,7 @@ class TaskAssigned extends Notification
 			    break;
 		    case 6:
 		    	return [
-				    'title' => __('Task Order Approval Request'),
+				    'title' => __('Task order approval request'),
 				    'message' => __(':assigner has requested task order approval', ['assigner' => $this->task->assigner->name]),
 				    'link' => '/task/show/'.$this->task->id,
 				    'tasktype' => $this->task->formatted_type,
