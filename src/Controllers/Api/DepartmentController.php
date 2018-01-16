@@ -23,8 +23,8 @@ class DepartmentController extends Controller {
 		if (!$order) {
 			$order = 'asc';
 		}
-		$tasks = Task::where('assignee_id', $employee->id)->with(['assigner', 'assignee'])->limit($limit)->offset($offset)->orderBy($sort, $order)->get();
-		$total = Task::whereAssigneeId($employee->id)->count();
+		$tasks = Task::where('assignee_id', $employee->id)->where('status', '<>' ,'completed')->with(['assigner', 'assignee'])->limit($limit)->offset($offset)->orderBy($sort, $order)->get();
+		$total = Task::whereAssigneeId($employee->id)->where('status', '<>' ,'completed')->count();
 		return response()->json(['tasks' => $tasks, 'total' => $total]);
 	}
 
