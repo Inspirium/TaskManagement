@@ -165,6 +165,10 @@ class TaskController extends Controller {
 	public function completeTask(Request $request, $id) {
 		$task = Task::find($id);
 		$task->status = 'completed';
+		if ($task->is_running) {
+			$task->is_running      = false;
+			$task->running_elapsed += Carbon::now()->diffInSeconds( $task->running_from );
+		}
 		$task->save();
 		$task->triggerCompleted();
 	}
