@@ -14,7 +14,7 @@ class EmployeeController extends Controller {
 		$sort = $request->input('sort');
 
 		if ('sent' === $type) {
-			$tasks = Task::with(['assigner', 'assignee'])->where('assigner_id', $employee->id)->orderBy($sort?$sort:'id', $order?$order:'asc')->limit($limit)->offset($offset)->get();
+			$tasks = Task::with(['assigner', 'assignee'])->where('assigner_id', $employee->id)->orderBy($sort?$sort:'id', $order?$order:'desc')->limit($limit)->offset($offset)->get();
 			$total = Task::with(['assigner', 'assignee'])->where('assigner_id', $employee->id)->count();
 		}
 		else {
