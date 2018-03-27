@@ -22,7 +22,7 @@ class EmployeeController extends Controller {
 				'assigner',
 				'assignee'
 			] )->where( 'assignee_id', $employee->id )
-			             ->where( 'status', $type )->orderBy($sort?$sort:'id', $order?$order:'asc')->limit($limit)->offset($offset)->get();
+			             ->where( 'status', $type )->orderBy($sort?$sort:'id', $order?$order:'desc')->limit($limit)->offset($offset)->get();
 			$total = Task::with( [
 				'assigner',
 				'assignee'
