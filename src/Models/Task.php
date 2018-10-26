@@ -184,11 +184,18 @@ class Task extends Model {
 	public function getFilesAttribute() {
 		if ($this->type == 4) {
 			$type = last(explode('/', $this->related_link));
-			return [
-				'initial' => $this->related->documents()->wherePivot( 'type', $type )->wherePivot( 'final', false )->get(),
-				'final' => $this->related->documents()->wherePivot( 'type', $type )->wherePivot( 'final', true )->get(),
-				'path'    => $type
-			];
+			if ($this->related) {
+                return [
+                    'initial' => $this->related->documents()->wherePivot('type', $type)->wherePivot('final', false)->get(),
+                    'final' => $this->related->documents()->wherePivot('type', $type)->wherePivot('final', true)->get(),
+                    'path' => $type
+                ];
+            }
+            else {
+                return [
+                    'path' => $type
+                ];
+            }
 		}
 		else {
 			return [
