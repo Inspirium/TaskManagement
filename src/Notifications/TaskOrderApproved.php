@@ -32,7 +32,12 @@ class TaskOrderApproved extends Notification
      */
     public function via($notifiable)
     {
-        return ['database', 'broadcast'];
+        $notifications = $notifiable->notifications;
+        $out = ['database', 'broadcast'];
+        if ( $notifications === 1 || (isset($notifications['task_order_approved']) && $notifications['task_order_approved'])) {
+            $out[] = 'mail';
+        }
+        return $out;
     }
 
     /**
@@ -43,10 +48,11 @@ class TaskOrderApproved extends Notification
      */
     public function toMail($notifiable)
     {
+        $values = $this->toArray($notifiable);
         return (new MailMessage)
-                    ->line('The introduction to the notification.')
-                    ->action('Notification Action', url('/'))
-                    ->line('Thank you for using our application!');
+            ->line($values['title'])
+            ->line($values['message'])
+            ->action('View', url($values['link']));
     }
 
     /**
