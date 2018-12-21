@@ -35,7 +35,7 @@ class TaskDeleted extends Notification
      */
     public function via($notifiable)
     {
-        $notifications = $notifiable->notifications;
+        $notifications = $notifiable->notification_settings;
         $out = ['database', 'broadcast'];
         if ( $notifications === 1 || (isset($notifications['task_deleted']) && $notifications['task_deleted'])) {
             $out[] = 'mail';

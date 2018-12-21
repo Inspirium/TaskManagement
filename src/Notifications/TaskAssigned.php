@@ -33,7 +33,7 @@ class TaskAssigned extends Notification
      */
     public function via($notifiable)
     {
-        $notifications = $notifiable->notifications;
+        $notifications = $notifiable->notification_settings;
         $out = ['database', 'broadcast'];
         if ( $notifications === 1 || (isset($notifications['task_assigned']) && $notifications['task_assigned'])) {
             $out[] = 'mail';

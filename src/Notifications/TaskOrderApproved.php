@@ -32,7 +32,7 @@ class TaskOrderApproved extends Notification
      */
     public function via($notifiable)
     {
-        $notifications = $notifiable->notifications;
+        $notifications = $notifiable->notification_settings;
         $out = ['database', 'broadcast'];
         if ( $notifications === 1 || (isset($notifications['task_order_approved']) && $notifications['task_order_approved'])) {
             $out[] = 'mail';
