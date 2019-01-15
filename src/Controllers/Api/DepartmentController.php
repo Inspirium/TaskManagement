@@ -29,8 +29,9 @@ class DepartmentController extends Controller {
 	}
 
 	public function getDepartment(Department $department) {
+	    $tasks = $department->tasks()->orderBy('created_at', 'DESC')->with(['assignee', 'assigner'])->get();
 		$employees = $department->employees()->get();
-		return response()->json(['department' => $department, 'employees' => $employees]);
+		return response()->json(['department' => $department, 'employees' => $employees, 'activity' => $tasks]);
 	}
 
 	public function updateOrder(Request $request) {
