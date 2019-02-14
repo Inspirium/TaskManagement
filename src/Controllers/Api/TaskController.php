@@ -87,12 +87,14 @@ class TaskController extends Controller {
 	public function deleteTask($id) {
 		$task = Task::find($id);
 		$task->load('thread');
-		foreach($task->thread->users as $user) {
-			if ($user->id !== Auth::id()) {
-				$user->notify( new TaskDeleted( $task, Auth::user() ) );
-			}
-		}
-		$task->thread()->delete();
+		if ($task->thread) {
+            foreach ($task->thread->users as $user) {
+                if ($user->id !== Auth::id()) {
+                    $user->notify(new TaskDeleted($task, Auth::user()));
+                }
+            }
+            $task->thread()->delete();
+        }
 		Task::destroy($id);
 
 		return response()->json([]);
