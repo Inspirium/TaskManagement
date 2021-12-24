@@ -11,6 +11,9 @@ class EmployeeController extends Controller {
 		$limit = $request->input('limit');
 		$offset = $request->input('offset');
 		$order = $request->input('order');
+        if (!$order) {
+            $order = 'asc';
+        }
 		$sort = $request->input('sort');
 
 		if ('sent' === $type) {

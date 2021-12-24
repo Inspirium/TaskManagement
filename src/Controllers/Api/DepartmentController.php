@@ -16,6 +16,9 @@ class DepartmentController extends Controller {
 		$limit = $request->input('limit');
 		$offset = $request->input('offset');
 		$order = $request->input('order');
+        if (!$order) {
+            $order = 'asc';
+        }
 		$sort = $request->input('sort');
 		if (!$sort) {
 			$sort = \Auth::user()->can( 'requestTaskOrder', $employee->department ) ? 'order' : 'new_order';
