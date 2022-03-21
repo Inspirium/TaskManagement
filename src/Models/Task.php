@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Inspirium\Models\Messaging\Thread;
 use Inspirium\TaskManagement\Notifications\TaskAssigned;
 use Inspirium\TaskManagement\Notifications\TaskCompleted;
+use Inspirium\Traits\HasThread;
 
 /**
  * Inspirium\TaskManagement\Models\Task
@@ -79,7 +80,9 @@ use Inspirium\TaskManagement\Notifications\TaskCompleted;
  */
 class Task extends Model {
 
-	use SoftDeletes;
+	use SoftDeletes, HasThread;
+
+    protected $notification = TaskAssigned::class;
 
 	private $types = [
 		1 => [
@@ -147,10 +150,6 @@ class Task extends Model {
 
 	public function related() {
 		return $this->morphTo();
-	}
-
-	public function thread() {
-		return $this->morphOne('Inspirium\Models\Messaging\Thread', 'connection');
 	}
 
 	public function getTypeAttribute($value) {
